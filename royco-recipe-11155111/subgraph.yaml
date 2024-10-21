@@ -1,0 +1,53 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: RecipeMarketHub
+    network: sepolia
+    source:
+      address: "0x56C69F3CC9Bc357D17d886BEa615C51FAaB36DDE"
+      abi: RecipeMarketHub
+      startBlock: 6917494
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - APOfferCancelled
+        - APOfferCreated
+        - APOfferFilled
+        - IPOfferCancelled
+        - IPOfferCreated
+        - IPOfferFilled
+        - MarketCreated
+        - WeirollWalletClaimedIncentive
+        - WeirollWalletExecutedWithdrawal
+        - WeirollWalletForfeited
+      abis:
+        - name: RecipeMarketHub
+          file: ./abis/RecipeMarketHub.json
+      eventHandlers:
+        - event: APOfferCancelled(indexed uint256)
+          handler: handleAPOfferCancelled
+        - event: APOfferCreated(indexed uint256,indexed bytes32,address,uint256,address[],uint256[],uint256)
+          handler: handleAPOfferCreated
+        - event: APOfferFilled(indexed uint256,uint256,address,uint256[],uint256[],uint256[])
+          handler: handleAPOfferFilled
+        - event: IPOfferCancelled(indexed bytes32)
+          handler: handleIPOfferCancelled
+        - event: IPOfferCreated(indexed uint256,indexed bytes32,indexed bytes32,uint256,address[],uint256[],uint256[],uint256[],uint256)
+          handler: handleIPOfferCreated
+        - event: IPOfferFilled(indexed bytes32,uint256,address,uint256[],uint256[],uint256[])
+          handler: handleIPOfferFilled
+        - event: MarketCreated(indexed uint256,indexed bytes32,indexed address,uint256,uint256,uint8)
+          handler: handleMarketCreated
+        - event: WeirollWalletClaimedIncentive(indexed address,address,address)
+          handler: handleWeirollWalletClaimedIncentive
+        - event: WeirollWalletExecutedWithdrawal(indexed address)
+          handler: handleWeirollWalletExecutedWithdrawal
+        - event: WeirollWalletForfeited(indexed address)
+          handler: handleWeirollWalletForfeited
+      file: ./src/recipe-market-hub.ts

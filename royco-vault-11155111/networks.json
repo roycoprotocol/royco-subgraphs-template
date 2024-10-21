@@ -1,0 +1,11 @@
+{
+  "sepolia": {
+    "WrappedVaultFactory": {
+      "address": "0x5c12ae3b1e9e9f21955bbee9aaf6b483991e2a23",
+      "startBlock": 6917494
+    },
+    "VaultMarketHub": {
+      "address": "0x6545dcF7Ac7D1275BdA590F9Bba69a9C708f3F89"
+    }
+  }
+}

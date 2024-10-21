@@ -1,0 +1,448 @@
+[
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_owner", "type": "address" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  { "inputs": [], "name": "ArrayLengthMismatch", "type": "error" },
+  { "inputs": [], "name": "CannotPlaceBelowMinQuantityOffer", "type": "error" },
+  { "inputs": [], "name": "CannotPlaceExpiredOffer", "type": "error" },
+  { "inputs": [], "name": "FundingVaultWithdrawFailed", "type": "error" },
+  { "inputs": [], "name": "MismatchedBaseAsset", "type": "error" },
+  { "inputs": [], "name": "NotEnoughBaseAssetToAllocate", "type": "error" },
+  { "inputs": [], "name": "NotEnoughBaseAssetToOffer", "type": "error" },
+  { "inputs": [], "name": "NotEnoughRemainingQuantity", "type": "error" },
+  { "inputs": [], "name": "NotOfferCreator", "type": "error" },
+  { "inputs": [], "name": "OfferConditionsNotMet", "type": "error" },
+  { "inputs": [], "name": "OfferDoesNotExist", "type": "error" },
+  { "inputs": [], "name": "OfferExpired", "type": "error" },
+  { "inputs": [], "name": "OffersPaused", "type": "error" },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "owner", "type": "address" }
+    ],
+    "name": "OwnableInvalidOwner",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "account", "type": "address" }
+    ],
+    "name": "OwnableUnauthorizedAccount",
+    "type": "error"
+  },
+  { "inputs": [], "name": "ReentrancyGuardReentrantCall", "type": "error" },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "offerID",
+        "type": "uint256"
+      }
+    ],
+    "name": "APOfferCancelled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "offerID",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "marketID",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "fundingVault",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "quantity",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address[]",
+        "name": "incentivesRequested",
+        "type": "address[]"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256[]",
+        "name": "incentivesRates",
+        "type": "uint256[]"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "expiry",
+        "type": "uint256"
+      }
+    ],
+    "name": "APOfferCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "offerID",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "fillAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "APOfferFilled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferStarted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "MIN_CAMPAIGN_DURATION",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "acceptOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "offerID", "type": "uint256" },
+          {
+            "internalType": "address",
+            "name": "targetVault",
+            "type": "address"
+          },
+          { "internalType": "address", "name": "ap", "type": "address" },
+          {
+            "internalType": "address",
+            "name": "fundingVault",
+            "type": "address"
+          },
+          { "internalType": "uint256", "name": "expiry", "type": "uint256" },
+          {
+            "internalType": "address[]",
+            "name": "incentivesRequested",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "incentivesRatesRequested",
+            "type": "uint256[]"
+          }
+        ],
+        "internalType": "struct VaultMarketHub.APOffer",
+        "name": "offer",
+        "type": "tuple"
+      }
+    ],
+    "name": "allocateOffer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "offerID", "type": "uint256" },
+          {
+            "internalType": "address",
+            "name": "targetVault",
+            "type": "address"
+          },
+          { "internalType": "address", "name": "ap", "type": "address" },
+          {
+            "internalType": "address",
+            "name": "fundingVault",
+            "type": "address"
+          },
+          { "internalType": "uint256", "name": "expiry", "type": "uint256" },
+          {
+            "internalType": "address[]",
+            "name": "incentivesRequested",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "incentivesRatesRequested",
+            "type": "uint256[]"
+          }
+        ],
+        "internalType": "struct VaultMarketHub.APOffer",
+        "name": "offer",
+        "type": "tuple"
+      },
+      { "internalType": "uint256", "name": "fillAmount", "type": "uint256" }
+    ],
+    "name": "allocateOffer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "offerID", "type": "uint256" },
+          {
+            "internalType": "address",
+            "name": "targetVault",
+            "type": "address"
+          },
+          { "internalType": "address", "name": "ap", "type": "address" },
+          {
+            "internalType": "address",
+            "name": "fundingVault",
+            "type": "address"
+          },
+          { "internalType": "uint256", "name": "expiry", "type": "uint256" },
+          {
+            "internalType": "address[]",
+            "name": "incentivesRequested",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "incentivesRatesRequested",
+            "type": "uint256[]"
+          }
+        ],
+        "internalType": "struct VaultMarketHub.APOffer[]",
+        "name": "offers",
+        "type": "tuple[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "fillAmounts",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "allocateOffers",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "offerID", "type": "uint256" },
+          {
+            "internalType": "address",
+            "name": "targetVault",
+            "type": "address"
+          },
+          { "internalType": "address", "name": "ap", "type": "address" },
+          {
+            "internalType": "address",
+            "name": "fundingVault",
+            "type": "address"
+          },
+          { "internalType": "uint256", "name": "expiry", "type": "uint256" },
+          {
+            "internalType": "address[]",
+            "name": "incentivesRequested",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "incentivesRatesRequested",
+            "type": "uint256[]"
+          }
+        ],
+        "internalType": "struct VaultMarketHub.APOffer",
+        "name": "offer",
+        "type": "tuple"
+      }
+    ],
+    "name": "cancelOffer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "targetVault", "type": "address" },
+      { "internalType": "address", "name": "fundingVault", "type": "address" },
+      { "internalType": "uint256", "name": "quantity", "type": "uint256" },
+      { "internalType": "uint256", "name": "expiry", "type": "uint256" },
+      {
+        "internalType": "address[]",
+        "name": "incentivesRequested",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "incentivesRatesRequested",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "createAPOffer",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "offerID", "type": "uint256" },
+          {
+            "internalType": "address",
+            "name": "targetVault",
+            "type": "address"
+          },
+          { "internalType": "address", "name": "ap", "type": "address" },
+          {
+            "internalType": "address",
+            "name": "fundingVault",
+            "type": "address"
+          },
+          { "internalType": "uint256", "name": "expiry", "type": "uint256" },
+          {
+            "internalType": "address[]",
+            "name": "incentivesRequested",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "incentivesRatesRequested",
+            "type": "uint256[]"
+          }
+        ],
+        "internalType": "struct VaultMarketHub.APOffer",
+        "name": "offer",
+        "type": "tuple"
+      }
+    ],
+    "name": "getOfferHash",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "numOffers",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "name": "offerHashToRemainingQuantity",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "offersPaused",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pendingOwner",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bool", "name": "_offersPaused", "type": "bool" }
+    ],
+    "name": "setOffersPaused",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "newOwner", "type": "address" }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
