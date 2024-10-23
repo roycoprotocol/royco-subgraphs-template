@@ -3,19 +3,19 @@
 ### Deploy
 
 ```bash
-goldsky subgraph deploy royco-vault-11155111/0.0.16 --path .
+goldsky subgraph deploy royco-vault-11155111/0.0.19 --path .
 ```
 
 ### Pause
 
 ```bash
-goldsky subgraph pause royco-vault-11155111/0.0.16
+goldsky subgraph pause royco-vault-11155111/0.0.19
 ```
 
 ### Delete
 
 ```bash
-goldsky subgraph delete royco-vault-11155111/0.0.16
+goldsky subgraph delete royco-vault-11155111/0.0.19
 ```
 
 ## Pipeline Commands

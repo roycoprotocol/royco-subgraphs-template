@@ -55,7 +55,7 @@ export function handleAPOfferCreated(event: APOfferCreatedEvent): void {
       .concat("_")
       .concat(MARKET_TYPE.toString())
       .concat("_")
-      .concat(event.params.marketID.toString())
+      .concat(event.params.marketID.toHexString())
   );
 
   if (rawMarket != null) {
@@ -87,7 +87,7 @@ export function handleAPOfferCreated(event: APOfferCreatedEvent): void {
     rawOffer.marketType = MARKET_TYPE;
     rawOffer.offerSide = AP_OFFER_SIDE;
     rawOffer.offerId = event.params.offerID.toString();
-    rawOffer.marketId = event.params.marketID.toString();
+    rawOffer.marketId = event.params.marketID.toHexString();
     rawOffer.creator = event.transaction.from.toHexString();
     rawOffer.fundingVault = event.params.fundingVault.toHexString();
     rawOffer.inputTokenId = rawMarket.inputTokenId;
@@ -128,7 +128,7 @@ export function handleAPOfferCreated(event: APOfferCreatedEvent): void {
 
     rawActivity.chainId = CHAIN_ID;
     rawActivity.marketType = MARKET_TYPE;
-    rawActivity.marketId = event.params.marketID.toString();
+    rawActivity.marketId = event.params.marketID.toHexString();
     rawActivity.accountAddress = event.transaction.from.toHexString();
     rawActivity.activityType = AP_OFFER_CREATED;
     rawActivity.tokensGivenIds = [rawMarket.inputTokenId];
@@ -347,7 +347,7 @@ export function handleAPOfferCancelled(event: APOfferCancelledEvent): void {
 
       rawActivityAP.chainId = CHAIN_ID;
       rawActivityAP.marketType = MARKET_TYPE;
-      rawActivityAP.marketId = rawOffer.marketId.toString();
+      rawActivityAP.marketId = rawOffer.marketId;
       rawActivityAP.accountAddress = event.transaction.from.toHexString();
       rawActivityAP.activityType = AP_OFFER_CANCELLED;
       rawActivityAP.tokensGivenIds = rawOffer.tokenIds;
