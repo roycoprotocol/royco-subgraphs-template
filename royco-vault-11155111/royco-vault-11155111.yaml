@@ -6,19 +6,19 @@ sources:
     name: raw_activity
     subgraphs:
       - name: royco-vault-11155111
-        version: 0.0.19
+        version: 0.0.20
     type: subgraph_entity
   ethereum_sepolia_raw_market:
     name: raw_market
     subgraphs:
       - name: royco-vault-11155111
-        version: 0.0.19
+        version: 0.0.20
     type: subgraph_entity
   ethereum_sepolia_raw_offer:
     name: raw_offer
     subgraphs:
       - name: royco-vault-11155111
-        version: 0.0.19
+        version: 0.0.20
     type: subgraph_entity
 transforms: {}
 sinks:
