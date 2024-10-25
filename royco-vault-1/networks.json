@@ -1,0 +1,11 @@
+{
+  "mainnet": {
+    "WrappedVaultFactory": {
+      "address": "0xb316d165d01ac68d31b297f847533d671c965662",
+      "startBlock": 21040754
+    },
+    "VaultMarketHub": {
+      "address": "0x52341389be638a5b8083d2b70a421f9d4c87ebcd"
+    }
+  }
+}
