@@ -6,9 +6,9 @@ dataSources:
     name: WrappedVaultFactory
     network: sepolia
     source:
-      address: "0x5c12ae3b1e9e9f21955bbee9aaf6b483991e2a23"
+      address: "0xded25e49bb9ef6172c73c2d50667779eef503937"
       abi: WrappedVaultFactory
-      startBlock: 6917494
+      startBlock: 6944252
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -27,9 +27,9 @@ dataSources:
     name: VaultMarketHub
     network: sepolia
     source:
-      address: "0x6545dcF7Ac7D1275BdA590F9Bba69a9C708f3F89"
+      address: "0xfc94ce989c77c6b388e302cd4ff31ca1faae8783"
       abi: VaultMarketHub
-      startBlock: 6917494
+      startBlock: 6944252
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

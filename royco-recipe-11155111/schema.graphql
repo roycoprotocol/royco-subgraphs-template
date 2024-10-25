@@ -1,129 +1,237 @@
-type APOfferCancelled @entity(immutable: true) {
-  id: Bytes!
-  offerID: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type APOfferCreated @entity(immutable: true) {
-  id: Bytes!
-  offerID: BigInt! # uint256
-  marketHash: Bytes! # bytes32
-  fundingVault: Bytes! # address
-  quantity: BigInt! # uint256
-  incentiveAddresses: [Bytes!]! # address[]
-  incentiveAmounts: [BigInt!]! # uint256[]
-  expiry: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type APOfferFilled @entity(immutable: true) {
-  id: Bytes!
-  offerID: BigInt! # uint256
-  fillAmount: BigInt! # uint256
-  weirollWallet: Bytes! # address
-  incentiveAmounts: [BigInt!]! # uint256[]
-  protocolFeeAmounts: [BigInt!]! # uint256[]
-  frontendFeeAmounts: [BigInt!]! # uint256[]
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type FeesClaimed @entity(immutable: true) {
-  id: Bytes!
-  claimant: Bytes! # address
-  incentive: Bytes! # address
-  amount: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type IPOfferCancelled @entity(immutable: true) {
-  id: Bytes!
-  offerHash: Bytes! # bytes32
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type IPOfferCreated @entity(immutable: true) {
-  id: Bytes!
-  offerID: BigInt! # uint256
-  offerHash: Bytes! # bytes32
-  marketHash: Bytes! # bytes32
-  quantity: BigInt! # uint256
-  incentivesOffered: [Bytes!]! # address[]
-  incentiveAmounts: [BigInt!]! # uint256[]
-  protocolFeeAmounts: [BigInt!]! # uint256[]
-  frontendFeeAmounts: [BigInt!]! # uint256[]
-  expiry: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type IPOfferFilled @entity(immutable: true) {
-  id: Bytes!
-  offerHash: Bytes! # bytes32
-  fillAmount: BigInt! # uint256
-  weirollWallet: Bytes! # address
-  incentiveAmounts: [BigInt!]! # uint256[]
-  protocolFeeAmounts: [BigInt!]! # uint256[]
-  frontendFeeAmounts: [BigInt!]! # uint256[]
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
 type MarketCreated @entity(immutable: true) {
-  id: Bytes!
-  marketID: BigInt! # uint256
-  marketHash: Bytes! # bytes32
-  inputToken: Bytes! # address
+  id: String!
+  marketId: BigInt! # uint256
+  marketHash: String! # String32
+  inputToken: String! # address
   lockupTime: BigInt! # uint256
   frontendFee: BigInt! # uint256
   rewardStyle: Int! # uint8
   blockNumber: BigInt!
   blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  transactionHash: String!
+  logIndex: BigInt!
 }
 
-type OwnershipTransferred @entity(immutable: true) {
-  id: Bytes!
-  user: Bytes! # address
-  newOwner: Bytes! # address
+type APOfferCreated @entity(immutable: true) {
+  id: String!
+  offerId: BigInt! # uint256
+  marketHash: String! # String32
+  fundingVault: String! # address
+  quantity: BigInt! # uint256
+  incentiveAddresses: [String!]! # address[]
+  incentiveAmounts: [BigInt!]! # uint256[]
+  expiry: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  transactionHash: String!
+  logIndex: BigInt!
+}
+
+type APOfferFilled @entity(immutable: true) {
+  id: String!
+  offerId: BigInt! # uint256
+  fillAmount: BigInt! # uint256
+  weirollWallet: String! # address
+  incentiveAmounts: [BigInt!]! # uint256[]
+  protocolFeeAmounts: [BigInt!]! # uint256[]
+  frontendFeeAmounts: [BigInt!]! # uint256[]
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  logIndex: BigInt!
+}
+
+type APOfferCancelled @entity(immutable: true) {
+  id: String!
+  offerId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  logIndex: BigInt!
+}
+
+type IPOfferCreated @entity(immutable: true) {
+  id: String!
+  offerId: BigInt! # uint256
+  offerHash: String! # String32
+  marketHash: String! # String32
+  quantity: BigInt! # uint256
+  incentivesOffered: [String!]! # address[]
+  incentiveAmounts: [BigInt!]! # uint256[]
+  protocolFeeAmounts: [BigInt!]! # uint256[]
+  frontendFeeAmounts: [BigInt!]! # uint256[]
+  expiry: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  logIndex: BigInt!
+}
+
+type IPOfferFilled @entity(immutable: true) {
+  id: String!
+  offerHash: String! # String32
+  fillAmount: BigInt! # uint256
+  weirollWallet: String! # address
+  incentiveAmounts: [BigInt!]! # uint256[]
+  protocolFeeAmounts: [BigInt!]! # uint256[]
+  frontendFeeAmounts: [BigInt!]! # uint256[]
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  logIndex: BigInt!
+}
+
+type IPOfferCancelled @entity(immutable: true) {
+  id: String!
+  offerHash: String! # String32
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  logIndex: BigInt!
 }
 
 type WeirollWalletClaimedIncentive @entity(immutable: true) {
-  id: Bytes!
-  weirollWallet: Bytes! # address
-  recipient: Bytes! # address
-  incentive: Bytes! # address
+  id: String!
+  weirollWallet: String! # address
+  recipient: String! # address
+  incentive: String! # address
   blockNumber: BigInt!
   blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  transactionHash: String!
+  logIndex: BigInt!
 }
 
 type WeirollWalletExecutedWithdrawal @entity(immutable: true) {
-  id: Bytes!
-  weirollWallet: Bytes! # address
+  id: String!
+  weirollWallet: String! # address
   blockNumber: BigInt!
   blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  transactionHash: String!
+  logIndex: BigInt!
 }
 
 type WeirollWalletForfeited @entity(immutable: true) {
-  id: Bytes!
-  weirollWallet: Bytes! # address
+  id: String!
+  weirollWallet: String! # address
   blockNumber: BigInt!
   blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  transactionHash: String!
+  logIndex: BigInt!
+}
+
+type RawMarket @entity {
+  id: String! # <CHAIN_ID>_<MARKET_TYPE>_<MARKET_ID>
+  chainId: BigInt! # Hardcoded
+  marketType: Int! # Hardcoded
+  marketId: String!
+  creator: String! # address
+  inputTokenId: String!
+  lockupTime: BigInt!
+  frontendFee: BigInt!
+  rewardStyle: Int!
+  incentivesAskedIds: [String!]! # array of strings: <CHAIN_ID>-<TOKEN_ADDRESS>
+  incentivesOfferedIds: [String!]! # array of strings: <CHAIN_ID>-<TOKEN_ADDRESS>
+  incentivesAskedAmount: [BigInt!]! # array of BigInts
+  incentivesOfferedAmount: [BigInt!]! # array of BigInts
+  quantityAsked: BigInt! # initially 0
+  quantityOffered: BigInt! # initially 0
+  quantityAskedFilled: BigInt! # initially 0
+  quantityOfferedFilled: BigInt! # initially 0
+  volumeTokenIds: [String!]! # array of strings: <CHAIN_ID>-<TOKEN_ADDRESS>
+  volumeAmounts: [BigInt!]! # array of BigInts
+  transactionHash: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  logIndex: BigInt!
+  # Vault market fields
+  underlyingVaultAddress: String! # address
+  incentivesRates: [BigInt!]! # array of BigInts
+  startTimestamps: [BigInt!]! # array of BigInts
+  endTimestamps: [BigInt!]! # array of BigInts
+}
+
+type RawOffer @entity {
+  id: String! # <CHAIN_ID>_<MARKET_TYPE>_<OFFER_SIDE>_<OFFER_ID>
+  chainId: BigInt! # Hardcoded
+  marketType: Int! # Hardcoded
+  offerSide: Int!
+  offerId: String! # For IP offer, it's actually offer hash, but we are using it as id
+  marketId: String!
+  creator: String! # address
+  fundingVault: String! # address
+  inputTokenId: String!
+  quantity: BigInt!
+  quantityRemaining: BigInt!
+  expiry: BigInt!
+  tokenIds: [String!]! # array of strings: <CHAIN_ID>-<TOKEN_ADDRESS>
+  tokenAmounts: [BigInt!]! # array of BigInts
+  protocolFeeAmounts: [BigInt!]! # array of BigInts
+  frontendFeeAmounts: [BigInt!]! # array of BigInts
+  isCancelled: Boolean!
+  transactionHash: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  logIndex: BigInt!
+}
+
+type RawPosition @entity {
+  id: String! # <CHAIN_ID>_<WEIROLL_WALLET_ADDRESS>_<OFFER_SIDE>
+  chainId: BigInt! # Hardcoded
+  weirollWallet: String! # address
+  offerSide: Int!
+  marketId: String!
+  rewardStyle: Int!
+  rawOfferSide: Int!
+  rawOfferId: String!
+  accountAddress: String! # address
+  ap: String! # address
+  ip: String! # address
+  inputTokenId: String!
+  quantity: BigInt!
+  tokenIds: [String!]! # array of strings: <CHAIN_ID>-<TOKEN_ADDRESS>
+  tokenAmounts: [BigInt!]! # array of BigInts
+  protocolFeeAmounts: [BigInt!]! # array of BigInts
+  frontendFeeAmounts: [BigInt!]! # array of BigInts
+  isClaimed: [Boolean!]! # Initially: Upfront - true, Arrear & Forfeitable - false
+  isForfeited: Boolean! # Initially: false
+  isWithdrawn: Boolean! # Initially: false
+  unlockTimestamp: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  logIndex: BigInt!
+}
+
+type RawAccountBalance @entity {
+  id: String! # <CHAIN_ID>_<MARKET_TYPE>_<MARKET_ID>_<ACCOUNT_ADDRESS>
+  chainId: BigInt! # Hardcoded
+  marketType: Int! # Hardcoded
+  marketId: String!
+  accountAddress: String! # address
+  inputTokenId: String! # <CHAIN_ID>-<TOKEN_ADDRESS>
+  quantityReceivedAmount: BigInt!
+  quantityGivenAmount: BigInt!
+  incentivesReceivedIds: [String!]! # array of strings: <CHAIN_ID>-<TOKEN_ADDRESS>
+  incentivesReceivedAmount: [BigInt!]! # array of BigInts
+  incentivesGivenIds: [String!]! # array of strings: <CHAIN_ID>-<TOKEN_ADDRESS>
+  incentivesGivenAmount: [BigInt!]! # array of BigInts
+  protocolFeeAmounts: [BigInt!]! # array of BigInts
+  frontendFeeAmounts: [BigInt!]! # array of BigInts
+}
+
+type RawActivity @entity {
+  id: String! # <CHAIN_ID>_<TRANSACTION_HASH>_<LOG_INDEX>
+  chainId: BigInt! # Hardcoded
+  marketType: Int! # Hardcoded
+  marketId: String!
+  accountAddress: String! # address
+  activityType: String!
+  tokensGivenIds: [String!]! # array of strings: <CHAIN_ID>-<TOKEN_ADDRESS>
+  tokensGivenAmount: [BigInt!]! # array of BigInts
+  tokensReceivedIds: [String!]! # array of strings: <CHAIN_ID>-<TOKEN_ADDRESS>
+  tokensReceivedAmount: [BigInt!]! # array of BigInts
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  logIndex: BigInt!
 }

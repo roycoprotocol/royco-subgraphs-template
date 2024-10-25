@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: RecipeMarketHub
-    network: sepolia
+    network: mainnet
     source:
-      address: "0x56C69F3CC9Bc357D17d886BEa615C51FAaB36DDE"
+      address: "0x76953a612c256fc497bbb49ed14147f24c4feb71"
       abi: RecipeMarketHub
-      startBlock: 6917494
+      startBlock: 21040393
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

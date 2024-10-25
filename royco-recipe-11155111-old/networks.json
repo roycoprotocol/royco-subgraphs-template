@@ -1,8 +1,0 @@
-{
-  "sepolia": {
-    "RecipeMarketHub": {
-      "address": "0x56C69F3CC9Bc357D17d886BEa615C51FAaB36DDE",
-      "startBlock": 6917494
-    }
-  }
-}

@@ -3,19 +3,19 @@
 ### Deploy
 
 ```bash
-goldsky subgraph deploy royco-recipe-11155111/0.0.23 --path .
+goldsky subgraph deploy royco-recipe-11155111/0.0.25 --path .
 ```
 
 ### Pause
 
 ```bash
-goldsky subgraph pause royco-recipe-11155111/0.0.23
+goldsky subgraph pause royco-recipe-11155111/0.0.25
 ```
 
 ### Delete
 
 ```bash
-goldsky subgraph delete royco-recipe-11155111/0.0.23
+goldsky subgraph delete royco-recipe-11155111/0.0.25
 ```
 
 ## Pipeline Commands

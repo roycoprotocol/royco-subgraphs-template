@@ -6,31 +6,31 @@ sources:
     type: subgraph_entity
     subgraphs:
       - name: royco-recipe-11155111
-        version: 0.0.23
+        version: 0.0.25
     name: raw_position
   ethereum_sepolia_raw_market:
     type: subgraph_entity
     subgraphs:
       - name: royco-recipe-11155111
-        version: 0.0.23
+        version: 0.0.25
     name: raw_market
   ethereum_sepolia_raw_activity:
     type: subgraph_entity
     subgraphs:
       - name: royco-recipe-11155111
-        version: 0.0.23
+        version: 0.0.25
     name: raw_activity
   ethereum_sepolia_raw_offer:
     type: subgraph_entity
     subgraphs:
       - name: royco-recipe-11155111
-        version: 0.0.23
+        version: 0.0.25
     name: raw_offer
   ethereum_sepolia_raw_account_balance:
     type: subgraph_entity
     subgraphs:
       - name: royco-recipe-11155111
-        version: 0.0.23
+        version: 0.0.25
     name: raw_account_balance
 transforms: {}
 sinks:
