@@ -1,6 +1,4 @@
 specVersion: 1.0.0
-indexerHints:
-  prune: auto
 schema:
   file: ./schema.graphql
 dataSources:
@@ -8,9 +6,9 @@ dataSources:
     name: RecipeMarketHub
     network: sepolia
     source:
-      address: "0xbf29db24d0b513deecf3915720abda5b94c46739"
+      address: "0x56C69F3CC9Bc357D17d886BEa615C51FAaB36DDE"
       abi: RecipeMarketHub
-      startBlock: 6944252
+      startBlock: 6917494
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -19,12 +17,10 @@ dataSources:
         - APOfferCancelled
         - APOfferCreated
         - APOfferFilled
-        - FeesClaimed
         - IPOfferCancelled
         - IPOfferCreated
         - IPOfferFilled
         - MarketCreated
-        - OwnershipTransferred
         - WeirollWalletClaimedIncentive
         - WeirollWalletExecutedWithdrawal
         - WeirollWalletForfeited
@@ -38,8 +34,6 @@ dataSources:
           handler: handleAPOfferCreated
         - event: APOfferFilled(indexed uint256,uint256,address,uint256[],uint256[],uint256[])
           handler: handleAPOfferFilled
-        - event: FeesClaimed(indexed address,indexed address,uint256)
-          handler: handleFeesClaimed
         - event: IPOfferCancelled(indexed bytes32)
           handler: handleIPOfferCancelled
         - event: IPOfferCreated(indexed uint256,indexed bytes32,indexed bytes32,uint256,address[],uint256[],uint256[],uint256[],uint256)
@@ -48,8 +42,6 @@ dataSources:
           handler: handleIPOfferFilled
         - event: MarketCreated(indexed uint256,indexed bytes32,indexed address,uint256,uint256,uint8)
           handler: handleMarketCreated
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
         - event: WeirollWalletClaimedIncentive(indexed address,address,address)
           handler: handleWeirollWalletClaimedIncentive
         - event: WeirollWalletExecutedWithdrawal(indexed address)
