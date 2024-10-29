@@ -114,9 +114,13 @@ export function handleIPOfferCreated(event: IPOfferCreatedEvent): void {
         rawMarket.volumeTokenIds = updatedVolumeTokenIds;
         rawMarket.volumeAmounts = updatedVolumeAmounts;
       } else {
-        rawMarket.volumeAmounts[index] = rawMarket.volumeAmounts[index].plus(
+        let updatedVolumeAmounts = rawMarket.volumeAmounts;
+
+        updatedVolumeAmounts[index] = updatedVolumeAmounts[index].plus(
           event.params.incentiveAmounts[i]
         );
+
+        rawMarket.volumeAmounts = updatedVolumeAmounts;
       }
     }
 
@@ -423,9 +427,13 @@ export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
         rawMarket.volumeTokenIds = updatedVolumeTokenIds;
         rawMarket.volumeAmounts = updatedVolumeAmounts;
       } else {
-        rawMarket.volumeAmounts[index] = rawMarket.volumeAmounts[index].plus(
+        let updatedVolumeAmounts = rawMarket.volumeAmounts;
+
+        updatedVolumeAmounts[index] = updatedVolumeAmounts[index].plus(
           event.params.fillAmount
         );
+
+        rawMarket.volumeAmounts = updatedVolumeAmounts;
       }
 
       rawMarket.save();
@@ -802,9 +810,13 @@ export function handleIPOfferCancelled(event: IPOfferCancelledEvent): void {
           // Update volume token ids and amounts for incentives
           let indexVolume = volumeTokenIds.indexOf(tokenId);
           if (indexVolume != -1) {
-            volumeAmounts[indexVolume] = volumeAmounts[indexVolume].minus(
-              rawOffer.tokenAmounts[i]
-            );
+            let updatedVolumeAmounts = volumeAmounts;
+
+            updatedVolumeAmounts[indexVolume] = updatedVolumeAmounts[
+              indexVolume
+            ].minus(rawOffer.tokenAmounts[i]);
+
+            volumeAmounts = updatedVolumeAmounts;
           }
         }
       }

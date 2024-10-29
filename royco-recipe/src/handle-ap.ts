@@ -269,9 +269,13 @@ export function handleAPOfferFilled(event: APOfferFilledEvent): void {
         rawMarket.volumeTokenIds = updatedVolumeTokenIds;
         rawMarket.volumeAmounts = updatedVolumeAmounts;
       } else {
-        rawMarket.volumeAmounts[index] = rawMarket.volumeAmounts[index].plus(
+        let updatedVolumeAmounts = rawMarket.volumeAmounts;
+
+        updatedVolumeAmounts[index] = updatedVolumeAmounts[index].plus(
           event.params.fillAmount
         );
+
+        rawMarket.volumeAmounts = updatedVolumeAmounts;
       }
 
       rawMarket.save();

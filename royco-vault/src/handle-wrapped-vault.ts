@@ -231,6 +231,9 @@ export function handleWithdraw(event: WithdrawEvent): void {
       volumeAmounts.push(event.params.assets);
     }
 
+    rawMarket.volumeTokenIds = volumeTokenIds;
+    rawMarket.volumeAmounts = volumeAmounts;
+
     rawMarket.save();
   }
   // ============== xxxxx ==============

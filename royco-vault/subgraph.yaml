@@ -5,11 +5,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: WrappedVaultFactory
-    network: arbitrum-sepolia
+    network: base
     source:
       address: "0xb316d165d01ac68d31b297f847533d671c965662"
       abi: WrappedVaultFactory
-      startBlock: 92171706
+      startBlock: 21548421
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -26,11 +26,11 @@ dataSources:
       file: ./src/wrapped-vault-factory.ts
   - kind: ethereum
     name: VaultMarketHub
-    network: arbitrum-sepolia
+    network: base
     source:
       address: "0x52341389be638a5b8083d2b70a421f9d4c87ebcd"
       abi: VaultMarketHub
-      startBlock: 92171759
+      startBlock: 21548421
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -54,7 +54,7 @@ dataSources:
 templates:
   - name: WrappedVaultTemplate
     kind: ethereum/contract
-    network: arbitrum-sepolia
+    network: base
     source:
       abi: WrappedVault
     mapping:
