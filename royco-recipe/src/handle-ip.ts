@@ -98,7 +98,10 @@ export function handleIPOfferCreated(event: IPOfferCreatedEvent): void {
 
     // Update volume token ids and amounts for incentives
     for (let i = 0; i < event.params.incentiveAmounts.length; i++) {
-      let tokenId = event.params.incentivesOffered[i].toHexString();
+      let tokenId = CHAIN_ID.toString()
+        .concat("-")
+        .concat(event.params.incentivesOffered[i].toHexString());
+
       let index = rawMarket.volumeTokenIds.indexOf(tokenId);
 
       if (index == -1) {
