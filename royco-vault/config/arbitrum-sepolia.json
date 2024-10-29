@@ -1,0 +1,8 @@
+{
+  "network": "arbitrum-sepolia",
+  "chainId": 421614,
+  "wrappedVaultFactoryAddress": "0xb316d165d01ac68d31b297f847533d671c965662",
+  "wrappedVaultFactoryStartBlock": 92171706,
+  "vaultMarketHubAddress": "0x52341389be638a5b8083d2b70a421f9d4c87ebcd",
+  "vaultMarketHubStartBlock": 92171759
+}

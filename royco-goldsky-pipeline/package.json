@@ -1,0 +1,16 @@
+{
+  "name": "royco-goldsky-pipeline",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "mustache config/versions.json config/royco-goldksy-pipeline.template.yaml > royco-goldsky-pipeline.yaml"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mustache-cli": "^2.3.2"
+  }
+}

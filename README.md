@@ -1,39 +1,33 @@
 # Royco Subgraphs and Pipelines
 
-## Notes
+## Commands to deploy subgraphs
 
-- All subgraphs and pipelines are deployed individually for each chain with two versions (recipe & vault)
-- All the commands should be run from the root of the corresponding subgraph/pipeline directory, i.e. <royco-recipe/vault-chain_id>
-- The name of the directory is composed of following: royco-<MARKET_TYPE>-<CHAIN_ID>, where MARKET_TYPE can be 'recipe' or 'vault'
-- Make sure the supabase db url is provided in the corresponding <royco-recipe/vault-chain_id>.yaml file under `SUPABASE_ROYCO_FRONTEND` secret and the secret is added on Goldsky
+`cd` into the subgraph directory and run the following commands for each directory: `royco-recipe` and `royco-vault`
 
-## Commands to manage subgraphs and pipelines
+1. Delete Old Subgraphs (Only go through this step if you have already deployed the subgraphs once)
 
-The following commands need to be run inside goldksy cli. Their docs can be found [here](https://docs.goldsky.com/introduction).
-
-### Deploy Subgraph
+> Note: Don't forget to update the correct version in the delete-subgraphs.sh file
 
 ```bash
-goldsky subgraph deploy <NAME>/<VERSION> --path .
+./delete-subgraphs.sh
 ```
 
-### Deploy Pipeline
+2. Deploy New Subgraphs
+
+> Note: Don't forget to update the correct version in the deploy-subgraphs.sh file
 
 ```bash
-goldsky pipeline apply <NAME>.yaml
+./deploy-subgraphs.sh
 ```
 
-## New version deployment (Subgraph + Pipeline)
+### Commands to deploy pipeline
 
-- Delete existing pipeline
-- Delete existing subgraph
-- Increment the version number in <royco-recipe/vault-version>.yaml
-- Increment the version number in <royco-recipe/vault-version>/README.md
-- Deploy new subgraph
-- Deploy new pipeline
+`cd` into the `royco-goldsky-pipeline` directory and run the following command:
 
-## Reference Link for accessing deployed subgraph
+> Note: Don't forget to update the correct version in `config/versions.json` file with latest version of `royco-recipe` and `royco-vault` subgraphs
 
+```bash
+./deploy-new-pipelines.sh
 ```
-https://api.goldsky.com/api/public/project_<PROJECT_ID>/subgraphs/<NAME>/<VERSION>/gn
-```
+
+> The bash script will delete the exisiting pipeline and deploy a new one.
