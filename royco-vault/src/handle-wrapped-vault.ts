@@ -58,6 +58,22 @@ export function handleDeposit(event: DepositEvent): void {
       event.params.shares
     );
 
+    // Update volume token ids and amounts
+    let volumeTokenIds = rawMarket.volumeTokenIds;
+    let volumeAmounts = rawMarket.volumeAmounts;
+
+    let index = volumeTokenIds.indexOf(rawMarket.inputTokenId);
+
+    if (index != -1) {
+      volumeAmounts[index] = volumeAmounts[index].plus(event.params.assets);
+    } else {
+      volumeTokenIds.push(rawMarket.inputTokenId);
+      volumeAmounts.push(event.params.assets);
+    }
+
+    rawMarket.volumeTokenIds = volumeTokenIds;
+    rawMarket.volumeAmounts = volumeAmounts;
+
     rawMarket.save();
   }
   // ============== xxxxx ==============
@@ -217,22 +233,6 @@ export function handleWithdraw(event: WithdrawEvent): void {
     rawMarket.quantityOfferedFilled = rawMarket.quantityOfferedFilled.minus(
       event.params.shares
     );
-
-    // Update volume token ids and amounts
-    let volumeTokenIds = rawMarket.volumeTokenIds;
-    let volumeAmounts = rawMarket.volumeAmounts;
-
-    let index = volumeTokenIds.indexOf(rawMarket.inputTokenId);
-
-    if (index != -1) {
-      volumeAmounts[index] = volumeAmounts[index].plus(event.params.assets);
-    } else {
-      volumeTokenIds.push(rawMarket.inputTokenId);
-      volumeAmounts.push(event.params.assets);
-    }
-
-    rawMarket.volumeTokenIds = volumeTokenIds;
-    rawMarket.volumeAmounts = volumeAmounts;
 
     rawMarket.save();
   }
