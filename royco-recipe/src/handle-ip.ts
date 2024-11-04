@@ -89,10 +89,13 @@ export function handleIPOfferCreated(event: IPOfferCreatedEvent): void {
         rawMarket.incentivesOfferedIds = updatedIncentivesOfferedIds;
         rawMarket.incentivesOfferedAmount = updatedIncentivesOfferedAmount;
       } else {
-        rawMarket.incentivesOfferedAmount[index] =
-          rawMarket.incentivesOfferedAmount[index].plus(
-            event.params.incentiveAmounts[i]
-          );
+        let updatedIncentivesOfferedAmount = rawMarket.incentivesOfferedAmount;
+
+        updatedIncentivesOfferedAmount[index] = updatedIncentivesOfferedAmount[
+          index
+        ].plus(event.params.incentiveAmounts[i]);
+
+        rawMarket.incentivesOfferedAmount = updatedIncentivesOfferedAmount;
       }
     }
 
@@ -267,20 +270,27 @@ export function handleIPOfferCreated(event: IPOfferCreatedEvent): void {
         rawAccountBalanceIP.protocolFeeAmounts = updatedProtocolFeeAmounts;
         rawAccountBalanceIP.frontendFeeAmounts = updatedFrontendFeeAmounts;
       } else {
-        rawAccountBalanceIP.incentivesGivenAmount[index] =
-          rawAccountBalanceIP.incentivesGivenAmount[index].plus(
-            event.params.incentiveAmounts[i]
-          );
+        let updatedIncentivesGivenAmount =
+          rawAccountBalanceIP.incentivesGivenAmount;
+        let updatedProtocolFeeAmounts = rawAccountBalanceIP.protocolFeeAmounts;
+        let updatedFrontendFeeAmounts = rawAccountBalanceIP.frontendFeeAmounts;
 
-        rawAccountBalanceIP.protocolFeeAmounts[index] =
-          rawAccountBalanceIP.protocolFeeAmounts[index].plus(
-            event.params.protocolFeeAmounts[i]
-          );
+        updatedIncentivesGivenAmount[index] = updatedIncentivesGivenAmount[
+          index
+        ].plus(event.params.incentiveAmounts[i]);
 
-        rawAccountBalanceIP.frontendFeeAmounts[index] =
-          rawAccountBalanceIP.frontendFeeAmounts[index].plus(
-            event.params.frontendFeeAmounts[i]
-          );
+        updatedProtocolFeeAmounts[index] = updatedProtocolFeeAmounts[
+          index
+        ].plus(event.params.protocolFeeAmounts[i]);
+
+        updatedFrontendFeeAmounts[index] = updatedFrontendFeeAmounts[
+          index
+        ].plus(event.params.frontendFeeAmounts[i]);
+
+        rawAccountBalanceIP.incentivesGivenAmount =
+          updatedIncentivesGivenAmount;
+        rawAccountBalanceIP.protocolFeeAmounts = updatedProtocolFeeAmounts;
+        rawAccountBalanceIP.frontendFeeAmounts = updatedFrontendFeeAmounts;
       }
     }
 
@@ -400,6 +410,7 @@ export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
 
       // Update incentivesOffered
       let incentivesOfferedIds = rawMarket.incentivesOfferedIds;
+      let updatedIncentivesOfferedAmount = rawMarket.incentivesOfferedAmount;
 
       for (let i = 0; i < event.params.incentiveAmounts.length; i++) {
         let tokenId = rawOffer.tokenIds[i];
@@ -407,12 +418,14 @@ export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
         let index = incentivesOfferedIds.indexOf(tokenId);
 
         if (index != -1) {
-          rawMarket.incentivesOfferedAmount[index] =
-            rawMarket.incentivesOfferedAmount[index].minus(
+          updatedIncentivesOfferedAmount[index] =
+            updatedIncentivesOfferedAmount[index].minus(
               event.params.incentiveAmounts[i]
             );
         }
       }
+
+      rawMarket.incentivesOfferedAmount = updatedIncentivesOfferedAmount;
 
       // Update volume token ids and amounts for quantity
       let index = rawMarket.volumeTokenIds.indexOf(rawOffer.inputTokenId);
@@ -636,10 +649,16 @@ export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
             rawAccountBalanceAP.incentivesReceivedAmount =
               updatedIncentivesReceivedAmount;
           } else {
-            rawAccountBalanceAP.incentivesReceivedAmount[index] =
-              rawAccountBalanceAP.incentivesReceivedAmount[index].plus(
+            let updatedIncentivesReceivedAmount =
+              rawAccountBalanceAP.incentivesReceivedAmount;
+
+            updatedIncentivesReceivedAmount[index] =
+              updatedIncentivesReceivedAmount[index].plus(
                 event.params.incentiveAmounts[i]
               );
+
+            rawAccountBalanceAP.incentivesReceivedAmount =
+              updatedIncentivesReceivedAmount;
           }
         }
 
@@ -663,12 +682,17 @@ export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
         // this case will never happen,
         // because the account balance for IP is created when the IP offer is created
       } else {
-        rawAccountBalanceIP.quantityReceivedAmount =
-          rawAccountBalanceIP.quantityReceivedAmount.plus(
-            event.params.fillAmount
-          ); // update
+        let updatedQuantityReceivedAmount =
+          rawAccountBalanceIP.quantityReceivedAmount;
+
+        updatedQuantityReceivedAmount = updatedQuantityReceivedAmount.plus(
+          event.params.fillAmount
+        ); // update
 
         // rest of the update logic was already made in the IP offer created event
+
+        rawAccountBalanceIP.quantityReceivedAmount =
+          updatedQuantityReceivedAmount;
 
         rawAccountBalanceIP.save();
       }
@@ -847,19 +871,29 @@ export function handleIPOfferCancelled(event: IPOfferCancelledEvent): void {
           let index = rawAccountBalanceIP.incentivesGivenIds.indexOf(tokenId);
 
           if (index != -1) {
-            rawAccountBalanceIP.incentivesGivenAmount[index] =
-              rawAccountBalanceIP.incentivesGivenAmount[index].minus(
-                rawOffer.tokenAmounts[i]
-              );
+            let updatedIncentivesGivenAmount =
+              rawAccountBalanceIP.incentivesGivenAmount;
+
+            updatedIncentivesGivenAmount[index] = updatedIncentivesGivenAmount[
+              index
+            ].minus(rawOffer.tokenAmounts[i]);
+
+            rawAccountBalanceIP.incentivesGivenAmount =
+              updatedIncentivesGivenAmount;
 
             // Protocol fees are not returned
+            let updatedFrontendFeeAmounts =
+              rawAccountBalanceIP.frontendFeeAmounts;
 
-            rawAccountBalanceIP.frontendFeeAmounts[index] =
-              rawAccountBalanceIP.frontendFeeAmounts[index].minus(
-                rawOffer.frontendFeeAmounts[i]
-                  .times(rawOffer.quantityRemaining)
-                  .div(rawOffer.quantity)
-              );
+            updatedFrontendFeeAmounts[index] = updatedFrontendFeeAmounts[
+              index
+            ].minus(
+              rawOffer.frontendFeeAmounts[i]
+                .times(rawOffer.quantityRemaining)
+                .div(rawOffer.quantity)
+            );
+
+            rawAccountBalanceIP.frontendFeeAmounts = updatedFrontendFeeAmounts;
           }
         }
 

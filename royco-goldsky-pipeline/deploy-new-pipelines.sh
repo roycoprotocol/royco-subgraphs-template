@@ -13,7 +13,7 @@ delete_pipeline() {
 
 # Function to prepare and deploy subgraph
 prepare_and_deploy() {
-    local pipeline_name="royco-goldsky-pipeline" # Note: update version if needed
+    local pipeline_name="royco-goldsky-pipeline"
     
     echo "Preparing ${pipeline_name}..."
     npm run prepare
@@ -32,7 +32,7 @@ echo "Starting pipeline management script..."
 # Then handle preparations and deployments
 echo -e "\n=== Preparation and Deployment Phase ==="
 
-delete_pipeline
+
 prepare_and_deploy
 
 echo "Script completed!"

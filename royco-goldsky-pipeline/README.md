@@ -21,17 +21,17 @@ npm run prepare
 ### Update
 
 ```bash
-goldsky pipeline apply royco-goldksy-pipeline.yaml
+goldsky pipeline apply royco-goldsky-pipeline.yaml
 ```
 
 ### Stop
 
 ```bash
-goldsky pipeline stop royco-goldksy-pipeline
+goldsky pipeline stop royco-goldsky-pipeline
 ```
 
 ### Delete
 
 ```bash
-goldsky pipeline delete royco-goldksy-pipeline
+goldsky pipeline delete royco-goldsky-pipeline
 ```

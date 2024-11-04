@@ -207,10 +207,16 @@ export function handleWeirollWalletForfeited(
         let index = rawAccountBalanceAP.incentivesReceivedIds.indexOf(tokenId);
 
         if (index != -1) {
-          rawAccountBalanceAP.incentivesReceivedAmount[index] =
-            rawAccountBalanceAP.incentivesReceivedAmount[index].minus(
+          let updatedIncentivesReceivedAmount =
+            rawAccountBalanceAP.incentivesReceivedAmount;
+
+          updatedIncentivesReceivedAmount[index] =
+            updatedIncentivesReceivedAmount[index].minus(
               rawPositionAP.tokenAmounts[i]
             );
+
+          rawAccountBalanceAP.incentivesReceivedAmount =
+            updatedIncentivesReceivedAmount;
         }
       }
       // ================== xxxxx ==================
@@ -236,10 +242,14 @@ export function handleWeirollWalletForfeited(
             );
 
             if (index != -1) {
-              rawAccountBalanceIP.incentivesGivenAmount[index] =
-                rawAccountBalanceIP.incentivesGivenAmount[index].minus(
-                  incentivesToReturn
-                );
+              let updatedIncentivesGivenAmount =
+                rawAccountBalanceIP.incentivesGivenAmount;
+
+              updatedIncentivesGivenAmount[index] =
+                updatedIncentivesGivenAmount[index].minus(incentivesToReturn);
+
+              rawAccountBalanceIP.incentivesGivenAmount =
+                updatedIncentivesGivenAmount;
             }
           }
         }
@@ -265,10 +275,14 @@ export function handleWeirollWalletForfeited(
           );
 
           if (index != -1) {
-            rawAccountBalanceIP.incentivesGivenAmount[index] =
-              rawAccountBalanceIP.incentivesGivenAmount[index].minus(
-                incentivesToReturn
-              );
+            let updatedIncentivesGivenAmount =
+              rawAccountBalanceIP.incentivesGivenAmount;
+
+            updatedIncentivesGivenAmount[index] =
+              updatedIncentivesGivenAmount[index].minus(incentivesToReturn);
+
+            rawAccountBalanceIP.incentivesGivenAmount =
+              updatedIncentivesGivenAmount;
           }
         }
       }
