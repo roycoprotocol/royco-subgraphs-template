@@ -640,9 +640,14 @@ export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
               rawAccountBalanceAP.incentivesReceivedAmount;
 
             updatedIncentivesReceivedIds.push(tokenId);
-            updatedIncentivesReceivedAmount.push(
-              event.params.incentiveAmounts[i]
-            );
+
+            if (rawMarket.rewardStyle != UPFRONT_REWARD_STYLE) {
+              updatedIncentivesReceivedAmount.push(
+                event.params.incentiveAmounts[i]
+              );
+            } else {
+              updatedIncentivesReceivedAmount.push(BigInt.zero());
+            }
 
             rawAccountBalanceAP.incentivesReceivedIds =
               updatedIncentivesReceivedIds;
@@ -652,10 +657,15 @@ export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
             let updatedIncentivesReceivedAmount =
               rawAccountBalanceAP.incentivesReceivedAmount;
 
-            updatedIncentivesReceivedAmount[index] =
-              updatedIncentivesReceivedAmount[index].plus(
-                event.params.incentiveAmounts[i]
-              );
+            if (rawMarket.rewardStyle != UPFRONT_REWARD_STYLE) {
+              updatedIncentivesReceivedAmount[index] =
+                updatedIncentivesReceivedAmount[index].plus(
+                  event.params.incentiveAmounts[i]
+                );
+            } else {
+              updatedIncentivesReceivedAmount[index] =
+                updatedIncentivesReceivedAmount[index].plus(BigInt.zero());
+            }
 
             rawAccountBalanceAP.incentivesReceivedAmount =
               updatedIncentivesReceivedAmount;

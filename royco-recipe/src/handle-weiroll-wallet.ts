@@ -62,21 +62,59 @@ export function handleWeirollWalletClaimedIncentive(
   );
 
   if (rawPositionAP != null && rawPositionIP != null) {
-    let claimedToken = CHAIN_ID.toString()
-      .concat("-")
-      .concat(event.params.incentive.toHexString());
+    let rawAccountBalanceAP = RawAccountBalance.load(
+      CHAIN_ID.toString()
+        .concat("_")
+        .concat(RECIPE_MARKET_TYPE.toString())
+        .concat("_")
+        .concat(rawPositionAP.marketId)
+        .concat("_")
+        .concat(rawPositionAP.ap)
+    );
 
-    let index = rawPositionAP.tokenIds.indexOf(claimedToken);
+    let rawAccountBalanceIP = RawAccountBalance.load(
+      CHAIN_ID.toString()
+        .concat("_")
+        .concat(RECIPE_MARKET_TYPE.toString())
+        .concat("_")
+        .concat(rawPositionIP.marketId)
+        .concat("_")
+        .concat(rawPositionIP.ip)
+    );
 
-    let newIsClaimedAP = rawPositionAP.isClaimed;
-    newIsClaimedAP[index] = true;
-    rawPositionAP.isClaimed = newIsClaimedAP;
-    rawPositionAP.save();
+    if (rawAccountBalanceAP != null && rawAccountBalanceIP != null) {
+      let claimedToken = CHAIN_ID.toString()
+        .concat("-")
+        .concat(event.params.incentive.toHexString());
 
-    let newIsClaimedIP = rawPositionIP.isClaimed;
-    newIsClaimedIP[index] = true;
-    rawPositionIP.isClaimed = newIsClaimedIP;
-    rawPositionIP.save();
+      let index = rawPositionAP.tokenIds.indexOf(claimedToken);
+
+      let newIsClaimedAP = rawPositionAP.isClaimed;
+
+      if (newIsClaimedAP[index] == false) {
+        let incentiveAmount = rawPositionAP.tokenAmounts[index];
+
+        // incentive is being claimed for first time
+        let updatedIncentivesReceivedAmount =
+          rawAccountBalanceAP.incentivesReceivedAmount;
+        updatedIncentivesReceivedAmount[index] =
+          updatedIncentivesReceivedAmount[index].minus(incentiveAmount);
+        rawAccountBalanceAP.incentivesReceivedAmount =
+          updatedIncentivesReceivedAmount;
+      }
+
+      newIsClaimedAP[index] = true;
+      rawPositionAP.isClaimed = newIsClaimedAP;
+      rawPositionAP.save();
+
+      let newIsClaimedIP = rawPositionIP.isClaimed;
+      newIsClaimedIP[index] = true;
+      rawPositionIP.isClaimed = newIsClaimedIP;
+      rawPositionIP.save();
+
+      rawAccountBalanceAP.save();
+      rawAccountBalanceIP.save();
+    }
   }
 
   // ============== ..... ==============
@@ -202,6 +240,8 @@ export function handleWeirollWalletForfeited(
     ) {
       // ================== ..... ==================
       // Update Account Balance for AP
+
+      // AP returns the incentives to the IP
       for (let i = 0; i < rawPositionAP.tokenIds.length; i++) {
         let tokenId = rawPositionAP.tokenIds[i];
         let index = rawAccountBalanceAP.incentivesReceivedIds.indexOf(tokenId);
@@ -219,6 +259,7 @@ export function handleWeirollWalletForfeited(
             updatedIncentivesReceivedAmount;
         }
       }
+
       // ================== xxxxx ==================
 
       // rawOffer was IP Offer
@@ -450,11 +491,46 @@ export function handleWeirollWalletExecutedWithdrawal(
   // ============== ..... ==============
   // Update Raw Position entity for AP & IP
   if (rawPositionAP != null && rawPositionIP != null) {
-    rawPositionAP.isWithdrawn = true;
-    rawPositionAP.save();
+    let rawAccountBalanceAP = RawAccountBalance.load(
+      CHAIN_ID.toString()
+        .concat("_")
+        .concat(RECIPE_MARKET_TYPE.toString())
+        .concat("_")
+        .concat(rawPositionAP.marketId)
+        .concat("_")
+        .concat(rawPositionAP.ap)
+    );
 
-    rawPositionIP.isWithdrawn = true;
-    rawPositionIP.save();
+    let rawAccountBalanceIP = RawAccountBalance.load(
+      CHAIN_ID.toString()
+        .concat("_")
+        .concat(RECIPE_MARKET_TYPE.toString())
+        .concat("_")
+        .concat(rawPositionIP.marketId)
+        .concat("_")
+        .concat(rawPositionIP.ip)
+    );
+
+    if (rawAccountBalanceAP != null && rawAccountBalanceIP != null) {
+      // AP gets their quantity back
+      rawAccountBalanceAP.quantityGivenAmount =
+        rawAccountBalanceAP.quantityGivenAmount.minus(rawPositionAP.quantity);
+
+      rawPositionAP.isWithdrawn = true;
+      rawPositionAP.save();
+
+      // IP gives their quantity back
+      rawAccountBalanceIP.quantityReceivedAmount =
+        rawAccountBalanceIP.quantityReceivedAmount.minus(
+          rawPositionIP.quantity
+        );
+
+      rawPositionIP.isWithdrawn = true;
+      rawPositionIP.save();
+
+      rawAccountBalanceAP.save();
+      rawAccountBalanceIP.save();
+    }
   }
   // ============== xxxxx ==============
 
