@@ -72,17 +72,7 @@ export function handleWeirollWalletClaimedIncentive(
         .concat(rawPositionAP.ap)
     );
 
-    let rawAccountBalanceIP = RawAccountBalance.load(
-      CHAIN_ID.toString()
-        .concat("_")
-        .concat(RECIPE_MARKET_TYPE.toString())
-        .concat("_")
-        .concat(rawPositionIP.marketId)
-        .concat("_")
-        .concat(rawPositionIP.ip)
-    );
-
-    if (rawAccountBalanceAP != null && rawAccountBalanceIP != null) {
+    if (rawAccountBalanceAP != null) {
       let claimedToken = CHAIN_ID.toString()
         .concat("-")
         .concat(event.params.incentive.toHexString());
@@ -95,12 +85,22 @@ export function handleWeirollWalletClaimedIncentive(
         let incentiveAmount = rawPositionAP.tokenAmounts[index];
 
         // incentive is being claimed for first time
-        let updatedIncentivesReceivedAmount =
+        let incentivesReceivedIds = rawAccountBalanceAP.incentivesReceivedIds;
+        let incentivesReceivedAmount =
           rawAccountBalanceAP.incentivesReceivedAmount;
-        updatedIncentivesReceivedAmount[index] =
-          updatedIncentivesReceivedAmount[index].minus(incentiveAmount);
-        rawAccountBalanceAP.incentivesReceivedAmount =
-          updatedIncentivesReceivedAmount;
+
+        let incentiveIndex = incentivesReceivedIds.indexOf(claimedToken);
+
+        if (incentiveIndex == -1) {
+          incentivesReceivedIds.push(claimedToken);
+          incentivesReceivedAmount.push(incentiveAmount);
+        } else {
+          incentivesReceivedAmount[incentiveIndex] =
+            incentivesReceivedAmount[incentiveIndex].plus(incentiveAmount);
+        }
+
+        rawAccountBalanceAP.incentivesReceivedIds = incentivesReceivedIds;
+        rawAccountBalanceAP.incentivesReceivedAmount = incentivesReceivedAmount;
       }
 
       newIsClaimedAP[index] = true;
@@ -113,7 +113,6 @@ export function handleWeirollWalletClaimedIncentive(
       rawPositionIP.save();
 
       rawAccountBalanceAP.save();
-      rawAccountBalanceIP.save();
     }
   }
 
@@ -239,104 +238,169 @@ export function handleWeirollWalletForfeited(
       rawAccountBalanceIP != null
     ) {
       // ================== ..... ==================
-      // Update Account Balance for AP
+      // Subtract received incentives from AP's account balance
+      let incentivesReceivedIds = rawAccountBalanceAP.incentivesReceivedIds;
+      let incentivesReceivedAmount =
+        rawAccountBalanceAP.incentivesReceivedAmount;
 
-      // AP returns the incentives to the IP
       for (let i = 0; i < rawPositionAP.tokenIds.length; i++) {
         let tokenId = rawPositionAP.tokenIds[i];
-        let index = rawAccountBalanceAP.incentivesReceivedIds.indexOf(tokenId);
+        let index = incentivesReceivedIds.indexOf(tokenId);
 
         if (index != -1) {
-          let updatedIncentivesReceivedAmount =
-            rawAccountBalanceAP.incentivesReceivedAmount;
-
-          updatedIncentivesReceivedAmount[index] =
-            updatedIncentivesReceivedAmount[index].minus(
-              rawPositionAP.tokenAmounts[i]
-            );
-
-          rawAccountBalanceAP.incentivesReceivedAmount =
-            updatedIncentivesReceivedAmount;
+          incentivesReceivedAmount[index] = incentivesReceivedAmount[
+            index
+          ].minus(rawPositionAP.tokenAmounts[i]);
         }
       }
 
+      rawAccountBalanceAP.incentivesReceivedAmount = incentivesReceivedAmount;
       // ================== xxxxx ==================
 
-      // rawOffer was IP Offer
       if (rawOffer.offerSide == IP_OFFER_SIDE) {
-        // rawOffer is cancelled or expired
+        // rawOffer was IP Offer
         if (
           rawOffer.isCancelled == true ||
-          (rawOffer.expiry != BigInt.zero() &&
-            rawOffer.expiry <= event.block.timestamp)
+          rawOffer.expiry <= event.block.timestamp
         ) {
+          // rawOffer is cancelled or expired
           // Return the incentives to IP
-          // Return the frontend fees to IP, but not the protocol fees
-          // Update Account Balance for IP
-          for (let i = 0; i < rawPositionIP.tokenIds.length; i++) {
+          if (rawPositionAP.ap == rawPositionIP.ip) {
+            // AP and IP are the same
+            let incentivesGivenIds = rawAccountBalanceAP.incentivesGivenIds;
+            let incentivesGivenAmount =
+              rawAccountBalanceAP.incentivesGivenAmount;
+            let frontendFeeAmounts = rawAccountBalanceAP.frontendFeeAmounts;
+
+            for (let i = 0; i < rawPositionIP.tokenIds.length; i++) {
+              let tokenId = rawPositionIP.tokenIds[i];
+              let index = incentivesGivenIds.indexOf(tokenId);
+
+              if (index != -1) {
+                incentivesGivenAmount[index] = incentivesGivenAmount[
+                  index
+                ].minus(rawPositionIP.tokenAmounts[i]);
+
+                // Protocol fees are not returned
+
+                frontendFeeAmounts[index] = frontendFeeAmounts[index].minus(
+                  rawPositionIP.frontendFeeAmounts[i]
+                );
+              }
+            }
+
+            rawAccountBalanceAP.incentivesGivenAmount = incentivesGivenAmount;
+            rawAccountBalanceAP.frontendFeeAmounts = frontendFeeAmounts;
+          } else {
+            // AP and IP are different
+            let incentivesGivenIds = rawAccountBalanceIP.incentivesGivenIds;
+            let incentivesGivenAmount =
+              rawAccountBalanceIP.incentivesGivenAmount;
+            let frontendFeeAmounts = rawAccountBalanceIP.frontendFeeAmounts;
+
+            for (let i = 0; i < rawPositionIP.tokenIds.length; i++) {
+              let tokenId = rawPositionIP.tokenIds[i];
+              let index = incentivesGivenIds.indexOf(tokenId);
+
+              if (index != -1) {
+                incentivesGivenAmount[index] = incentivesGivenAmount[
+                  index
+                ].minus(rawPositionIP.tokenAmounts[i]);
+
+                // Protocol fees are not returned
+
+                frontendFeeAmounts[index] = frontendFeeAmounts[index].minus(
+                  rawPositionIP.frontendFeeAmounts[i]
+                );
+              }
+            }
+
+            rawAccountBalanceIP.incentivesGivenAmount = incentivesGivenAmount;
+            rawAccountBalanceIP.frontendFeeAmounts = frontendFeeAmounts;
+          }
+        } else {
+          // rawOffer is not cancelled or expired
+          // return the quantity to rawOffer
+          rawOffer.quantityRemaining = rawOffer.quantityRemaining.plus(
+            rawPositionAP.quantity
+          );
+        }
+      } else {
+        // rawOffer was AP Offer
+        if (rawPositionAP.ap === rawPositionIP.ip) {
+          // AP and IP are the same
+          let incentivesGivenIds = rawAccountBalanceAP.incentivesGivenIds;
+          let incentivesGivenAmount = rawAccountBalanceAP.incentivesGivenAmount;
+          let frontendFeeAmounts = rawAccountBalanceAP.frontendFeeAmounts;
+
+          for (let i = 0; i < rawPositionAP.tokenIds.length; i++) {
             let tokenId = rawPositionIP.tokenIds[i];
-            let index = rawAccountBalanceIP.incentivesGivenIds.indexOf(tokenId);
-            let incentivesToReturn = rawPositionIP.tokenAmounts[i].plus(
-              rawPositionIP.frontendFeeAmounts[i]
-                .times(rawPositionIP.quantity)
-                .div(rawOffer.quantity)
-            );
+            let index = incentivesGivenIds.indexOf(tokenId);
 
             if (index != -1) {
-              let updatedIncentivesGivenAmount =
-                rawAccountBalanceIP.incentivesGivenAmount;
+              incentivesGivenAmount[index] = incentivesGivenAmount[index].minus(
+                rawPositionAP.tokenAmounts[i]
+              );
 
-              updatedIncentivesGivenAmount[index] =
-                updatedIncentivesGivenAmount[index].minus(incentivesToReturn);
+              // Protocol fees are not returned
 
-              rawAccountBalanceIP.incentivesGivenAmount =
-                updatedIncentivesGivenAmount;
+              frontendFeeAmounts[index] = frontendFeeAmounts[index].minus(
+                rawPositionAP.frontendFeeAmounts[i]
+              );
             }
           }
-        }
-        // return the quantity to rawOffer
-        else {
-          rawOffer.quantityRemaining = rawOffer.quantityRemaining.plus(
-            rawPositionIP.quantity
-          );
-        }
-      }
-      // rawOffer was AP Offer
-      else {
-        // Return the incentives to IP
-        // Return the frontend fees to IP, but not the protocol fees
-        // Update Account Balance for IP
-        for (let i = 0; i < rawPositionIP.tokenIds.length; i++) {
-          let tokenId = rawPositionIP.tokenIds[i];
-          let index = rawAccountBalanceIP.incentivesGivenIds.indexOf(tokenId);
-          let incentivesToReturn = rawPositionIP.tokenAmounts[i].plus(
-            rawPositionIP.frontendFeeAmounts[i]
-              .times(rawPositionIP.quantity)
-              .div(rawOffer.quantity)
-          );
 
-          if (index != -1) {
-            let updatedIncentivesGivenAmount =
-              rawAccountBalanceIP.incentivesGivenAmount;
+          rawAccountBalanceAP.incentivesGivenAmount = incentivesGivenAmount;
+          rawAccountBalanceAP.frontendFeeAmounts = frontendFeeAmounts;
+        } else {
+          // AP and IP are different
+          let incentivesGivenIds = rawAccountBalanceIP.incentivesGivenIds;
+          let incentivesGivenAmount = rawAccountBalanceIP.incentivesGivenAmount;
+          let frontendFeeAmounts = rawAccountBalanceIP.frontendFeeAmounts;
 
-            updatedIncentivesGivenAmount[index] =
-              updatedIncentivesGivenAmount[index].minus(incentivesToReturn);
+          for (let i = 0; i < rawPositionAP.tokenIds.length; i++) {
+            let tokenId = rawPositionAP.tokenIds[i];
+            let index = incentivesGivenIds.indexOf(tokenId);
 
-            rawAccountBalanceIP.incentivesGivenAmount =
-              updatedIncentivesGivenAmount;
+            if (index != -1) {
+              incentivesGivenAmount[index] = incentivesGivenAmount[index].minus(
+                rawPositionAP.tokenAmounts[i]
+              );
+
+              // Protocol fees are not returned
+
+              frontendFeeAmounts[index] = frontendFeeAmounts[index].minus(
+                rawPositionAP.frontendFeeAmounts[i]
+              );
+            }
           }
+
+          rawAccountBalanceIP.incentivesGivenAmount = incentivesGivenAmount;
+          rawAccountBalanceIP.frontendFeeAmounts = frontendFeeAmounts;
         }
       }
 
-      // Save all entities
-      rawOffer.save();
-      rawAccountBalanceAP.save();
-      rawAccountBalanceIP.save();
+      if (rawPositionAP.ap == rawPositionIP.ip) {
+        // Update account balance only once, that is for AP and IP together
+        rawAccountBalanceAP.save();
+      } else {
+        // Update account balance for AP and IP separately
+        rawAccountBalanceAP.save();
+        rawAccountBalanceIP.save();
+      }
     }
 
-    // Save all entities
-    rawPositionAP.save();
-    rawPositionIP.save();
+    if (rawOffer != null) {
+      rawOffer.save();
+    }
+
+    if (rawPositionAP != null) {
+      rawPositionAP.save();
+    }
+
+    if (rawPositionIP != null) {
+      rawPositionIP.save();
+    }
   }
 
   // ============== ..... ==============
@@ -512,24 +576,39 @@ export function handleWeirollWalletExecutedWithdrawal(
     );
 
     if (rawAccountBalanceAP != null && rawAccountBalanceIP != null) {
-      // AP gets their quantity back
-      rawAccountBalanceAP.quantityGivenAmount =
-        rawAccountBalanceAP.quantityGivenAmount.minus(rawPositionAP.quantity);
+      if (rawPositionAP.ap == rawPositionIP.ip) {
+        // Update account balance only once, that is for AP and IP together
+        rawAccountBalanceAP.quantityGivenAmount =
+          rawAccountBalanceAP.quantityGivenAmount.minus(rawPositionAP.quantity);
+        rawAccountBalanceAP.quantityReceivedAmount =
+          rawAccountBalanceAP.quantityReceivedAmount.minus(
+            rawPositionIP.quantity
+          );
+
+        // Save new accounts
+        rawAccountBalanceAP.save();
+      } else {
+        // Update account balance for AP and IP separately
+        // AP gets their quantity back
+        rawAccountBalanceAP.quantityGivenAmount =
+          rawAccountBalanceAP.quantityGivenAmount.minus(rawPositionAP.quantity);
+
+        // IP gives their quantity back
+        rawAccountBalanceIP.quantityReceivedAmount =
+          rawAccountBalanceIP.quantityReceivedAmount.minus(
+            rawPositionIP.quantity
+          );
+
+        // Save new accounts
+        rawAccountBalanceAP.save();
+        rawAccountBalanceIP.save();
+      }
 
       rawPositionAP.isWithdrawn = true;
       rawPositionAP.save();
 
-      // IP gives their quantity back
-      rawAccountBalanceIP.quantityReceivedAmount =
-        rawAccountBalanceIP.quantityReceivedAmount.minus(
-          rawPositionIP.quantity
-        );
-
       rawPositionIP.isWithdrawn = true;
       rawPositionIP.save();
-
-      rawAccountBalanceAP.save();
-      rawAccountBalanceIP.save();
     }
   }
   // ============== xxxxx ==============
