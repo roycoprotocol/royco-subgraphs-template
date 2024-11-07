@@ -18,6 +18,7 @@ import {
   VAULT_MARKET_TYPE,
   FRONTEND_FEE_UPDATED,
 } from "./constants";
+import { WrappedVault } from "../generated/templates/WrappedVaultTemplate/WrappedVault";
 
 export function handleDeposit(event: DepositEvent): void {
   let entity = new Deposit(
@@ -51,9 +52,15 @@ export function handleDeposit(event: DepositEvent): void {
   // ============== ..... ==============
   // Update Raw Market entity
   if (rawMarket != null) {
-    rawMarket.quantityOffered = rawMarket.quantityOffered.plus(
-      event.params.assets
-    );
+    // Create contract binding
+    let contract = WrappedVault.bind(event.address);
+
+    // Call totalAssets() and assign to quantityOffered
+    let totalAssetsResult = contract.try_totalAssets();
+    if (!totalAssetsResult.reverted) {
+      rawMarket.quantityOffered = totalAssetsResult.value;
+    }
+
     rawMarket.quantityOfferedFilled = rawMarket.quantityOfferedFilled.plus(
       event.params.shares
     );
@@ -183,6 +190,23 @@ export function handleWithdraw(event: WithdrawEvent): void {
   );
 
   if (rawMarket != null) {
+    // Create contract binding
+    let contract = WrappedVault.bind(event.address);
+
+    // Call totalAssets() and assign to quantityOffered
+    let totalAssetsResult = contract.try_totalAssets();
+    if (!totalAssetsResult.reverted) {
+      rawMarket.quantityOffered = totalAssetsResult.value;
+    }
+
+    rawMarket.quantityOfferedFilled = rawMarket.quantityOfferedFilled.minus(
+      event.params.shares
+    );
+
+    rawMarket.save();
+  }
+
+  if (rawMarket != null) {
     // ============== ..... ==============
     // New Raw Account Balance entity
     let rawAccountBalance = RawAccountBalance.load(
@@ -223,20 +247,6 @@ export function handleWithdraw(event: WithdrawEvent): void {
     rawAccountBalance.save();
     // ============== xxxxx ==============
   }
-
-  // ============== ..... ==============
-  // Update Raw Market entity
-  if (rawMarket != null) {
-    rawMarket.quantityOffered = rawMarket.quantityOffered.minus(
-      event.params.assets
-    );
-    rawMarket.quantityOfferedFilled = rawMarket.quantityOfferedFilled.minus(
-      event.params.shares
-    );
-
-    rawMarket.save();
-  }
-  // ============== xxxxx ==============
 
   if (rawMarket != null) {
     // ============== ..... ==============
