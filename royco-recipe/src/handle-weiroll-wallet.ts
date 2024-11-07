@@ -554,7 +554,12 @@ export function handleWeirollWalletExecutedWithdrawal(
 
   // ============== ..... ==============
   // Update Raw Position entity for AP & IP
-  if (rawPositionAP != null && rawPositionIP != null) {
+  if (
+    rawPositionAP != null &&
+    rawPositionIP != null &&
+    rawPositionAP.isWithdrawn == false &&
+    rawPositionIP.isWithdrawn == false
+  ) {
     let rawAccountBalanceAP = RawAccountBalance.load(
       CHAIN_ID.toString()
         .concat("_")
