@@ -470,7 +470,7 @@ export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
       rawPositionAP.rawOfferSide = rawOffer.offerSide;
       rawPositionAP.rawOfferId = rawOffer.offerId;
       rawPositionAP.accountAddress = event.transaction.from.toHexString();
-      rawPositionAP.ap = event.params.weirollWallet.toHexString();
+      rawPositionAP.ap = event.transaction.from.toHexString();
       rawPositionAP.ip = rawOffer.creator;
       rawPositionAP.inputTokenId = rawMarket.inputTokenId;
       rawPositionAP.quantity = event.params.fillAmount;
@@ -529,7 +529,7 @@ export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
       rawPositionIP.rawOfferSide = rawOffer.offerSide;
       rawPositionIP.rawOfferId = rawOffer.offerId;
       rawPositionIP.accountAddress = rawOffer.creator;
-      rawPositionIP.ap = event.params.weirollWallet.toHexString();
+      rawPositionIP.ap = event.transaction.from.toHexString();
       rawPositionIP.ip = rawOffer.creator;
       rawPositionIP.inputTokenId = rawMarket.inputTokenId;
       rawPositionIP.quantity = event.params.fillAmount;

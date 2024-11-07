@@ -4,7 +4,7 @@ import { BigInt } from "@graphprotocol/graph-ts";
 export const RECIPE_MARKET_TYPE = 0; // Recipe Market
 export const VAULT_MARKET_TYPE = 1; // Vault Market
 
-export const CHAIN_ID = BigInt.fromU64(8453); // Will be replaced during deployment
+export const CHAIN_ID = BigInt.fromU64(1); // Will be replaced during deployment
 
 export const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 
