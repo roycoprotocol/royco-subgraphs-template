@@ -96,7 +96,7 @@ export function handleWeirollWalletClaimedIncentive(
           incentivesReceivedAmount.push(incentiveAmount);
         } else {
           incentivesReceivedAmount[incentiveIndex] =
-            incentivesReceivedAmount[incentiveIndex].plus(incentiveAmount);
+            incentivesReceivedAmount[incentiveIndex].minus(incentiveAmount);
         }
 
         rawAccountBalanceAP.incentivesReceivedIds = incentivesReceivedIds;

@@ -625,6 +625,29 @@ export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
               ].plus(event.params.incentiveAmounts[i]);
             }
           }
+
+          rawAccountBalanceAP.incentivesReceivedIds = incentivesReceivedIds;
+          rawAccountBalanceAP.incentivesReceivedAmount =
+            incentivesReceivedAmount;
+        } else {
+          // Reward style is upfront
+          let incentivesReceivedIds = rawAccountBalanceAP.incentivesReceivedIds;
+          let incentivesReceivedAmount =
+            rawAccountBalanceAP.incentivesReceivedAmount;
+
+          for (let i = 0; i < rawOffer.tokenIds.length; i++) {
+            let tokenId = rawOffer.tokenIds[i];
+            let index = incentivesReceivedIds.indexOf(tokenId);
+
+            if (index == -1) {
+              incentivesReceivedIds.push(tokenId);
+              incentivesReceivedAmount.push(BigInt.zero());
+            }
+          }
+
+          rawAccountBalanceAP.incentivesReceivedIds = incentivesReceivedIds;
+          rawAccountBalanceAP.incentivesReceivedAmount =
+            incentivesReceivedAmount;
         }
 
         rawAccountBalanceAP.save();
@@ -656,6 +679,29 @@ export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
               ].plus(event.params.incentiveAmounts[i]);
             }
           }
+
+          rawAccountBalanceAP.incentivesReceivedIds = incentivesReceivedIds;
+          rawAccountBalanceAP.incentivesReceivedAmount =
+            incentivesReceivedAmount;
+        } else {
+          // Reward style is upfront
+          let incentivesReceivedIds = rawAccountBalanceAP.incentivesReceivedIds;
+          let incentivesReceivedAmount =
+            rawAccountBalanceAP.incentivesReceivedAmount;
+
+          for (let i = 0; i < rawOffer.tokenIds.length; i++) {
+            let tokenId = rawOffer.tokenIds[i];
+            let index = incentivesReceivedIds.indexOf(tokenId);
+
+            if (index == -1) {
+              incentivesReceivedIds.push(tokenId);
+              incentivesReceivedAmount.push(BigInt.zero());
+            }
+          }
+
+          rawAccountBalanceAP.incentivesReceivedIds = incentivesReceivedIds;
+          rawAccountBalanceAP.incentivesReceivedAmount =
+            incentivesReceivedAmount;
         }
 
         rawAccountBalanceAP.save();
