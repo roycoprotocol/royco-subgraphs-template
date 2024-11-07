@@ -8,6 +8,14 @@ npm install
 
 ### Bash Script
 
+#### Delete Existing Pipelines
+
+```bash
+./delete-existing-pipelines.sh
+```
+
+#### Deploy New Pipelines
+
 ```bash
 ./deploy-new-pipelines.sh
 ```
