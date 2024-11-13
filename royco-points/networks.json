@@ -1,0 +1,8 @@
+{
+  "arbitrum-one": {
+    "PointsFactory": {
+      "address": "0x19112AdBDAfB465ddF0b57eCC07E68110Ad09c50",
+      "startBlock": 267610567
+    }
+  }
+}
