@@ -67,6 +67,8 @@ templates:
         - RewardsSet
         - RewardsTokenAdded
         - FrontendFeeUpdated
+        - OwnershipTransferred
+        - Transfer
       abis:
         - name: WrappedVault
           file: ./abis/WrappedVault.json
@@ -81,4 +83,8 @@ templates:
           handler: handleRewardsTokenAdded
         - event: FrontendFeeUpdated(uint256)
           handler: handleFrontendFeeUpdated
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
       file: ./src/wrapped-vault.ts

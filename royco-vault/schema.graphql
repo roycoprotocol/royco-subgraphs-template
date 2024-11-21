@@ -194,6 +194,7 @@ type RawAccountBalance @entity {
   marketId: String!
   accountAddress: String! # address
   inputTokenId: String! # <CHAIN_ID>-<TOKEN_ADDRESS>
+  quantityGivenAmount: BigInt!
   quantityReceivedAmount: BigInt!
   incentivesGivenIds: [String!]! # array of strings: <CHAIN_ID>-<TOKEN_ADDRESS>
   incentivesGivenAmount: [BigInt!]! # array of BigInts
@@ -203,6 +204,17 @@ type OwnershipTransferred @entity(immutable: true) {
   id: String!
   user: String! # address
   newOwner: String! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  logIndex: BigInt!
+}
+
+type Transfer @entity(immutable: true) {
+  id: String!
+  from: String! # address
+  to: String! # address
+  tokens: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: String!

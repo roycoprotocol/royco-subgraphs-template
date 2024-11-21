@@ -1,16 +1,15 @@
+# prettier-ignore
 specVersion: 1.0.0
-indexerHints:
-  prune: auto
 schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
     name: PointsFactory
-    network: arbitrum-one
+    network: {{network}}
     source:
-      address: "0x19112AdBDAfB465ddF0b57eCC07E68110Ad09c50"
+      address: "{{pointsFactoryAddress}}"
       abi: PointsFactory
-      startBlock: 267610567
+      startBlock: {{pointsFactoryStartBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -33,3 +32,21 @@ dataSources:
         - event: RecipeMarketHubAdded(indexed address)
           handler: handleRecipeMarketHubAdded
       file: ./src/points-factory.ts
+templates:
+  - name: PointsTemplate
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      abi: Points
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Point
+        - AllowedVault
+        - AllowedIP
+        - Award
+      abis:
+        - name: Points
+          file: ./abis/Points.json

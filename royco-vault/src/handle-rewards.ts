@@ -9,6 +9,7 @@ import {
 import {
   RewardsSet as RewardsSetEvent,
   RewardsTokenAdded as RewardsTokenAddedEvent,
+  WrappedVault,
 } from "../generated/templates/WrappedVaultTemplate/WrappedVault";
 import {
   ADD_REWARD,
@@ -168,6 +169,7 @@ export function handleRewardsSet(event: RewardsSetEvent): void {
       rawAccountBalance.marketId = event.address.toHexString();
       rawAccountBalance.accountAddress = rawMarket.owner;
       rawAccountBalance.inputTokenId = rawMarket.inputTokenId;
+      rawAccountBalance.quantityGivenAmount = BigInt.zero();
       rawAccountBalance.quantityReceivedAmount = BigInt.zero();
       rawAccountBalance.incentivesGivenIds = [];
       rawAccountBalance.incentivesGivenAmount = [];
@@ -248,20 +250,38 @@ export function handleRewardsSet(event: RewardsSetEvent): void {
       newIncentivesOfferedAmount[index] = event.params.totalRewards;
       rawMarket.incentivesOfferedAmount = newIncentivesOfferedAmount;
 
-      // Update startTimestamps
-      let newStartTimestamps = rawMarket.startTimestamps;
-      newStartTimestamps[index] = event.params.start;
-      rawMarket.startTimestamps = newStartTimestamps;
+      /**
+       * @note New reward data setting
+       */
+      let contract = WrappedVault.bind(event.address);
 
-      // Update endTimestamps
-      let newEndTimestamps = rawMarket.endTimestamps;
-      newEndTimestamps[index] = event.params.end;
-      rawMarket.endTimestamps = newEndTimestamps;
+      // Call the mapping using try/catch
+      let rewardIntervalResult = contract.try_rewardToInterval(
+        event.params.reward
+      );
+      if (!rewardIntervalResult.reverted) {
+        rawMarket.startTimestamps[index] = rewardIntervalResult.value.value0;
+        rawMarket.endTimestamps[index] = rewardIntervalResult.value.value1;
+        rawMarket.incentivesRates[index] = rewardIntervalResult.value.value2;
+      }
 
-      // Update incentivesRates
-      let newIncentivesRates = rawMarket.incentivesRates;
-      newIncentivesRates[index] = event.params.rate;
-      rawMarket.incentivesRates = newIncentivesRates;
+      /**
+       * @note Temporarily changed rewards to get data from functions
+       */
+      // // Update startTimestamps
+      // let newStartTimestamps = rawMarket.startTimestamps;
+      // newStartTimestamps[index] = event.params.start;
+      // rawMarket.startTimestamps = newStartTimestamps;
+
+      // // Update endTimestamps
+      // let newEndTimestamps = rawMarket.endTimestamps;
+      // newEndTimestamps[index] = event.params.end;
+      // rawMarket.endTimestamps = newEndTimestamps;
+
+      // // Update incentivesRates
+      // let newIncentivesRates = rawMarket.incentivesRates;
+      // newIncentivesRates[index] = event.params.rate;
+      // rawMarket.incentivesRates = newIncentivesRates;
 
       // Update Raw Account Balance entity
       rawAccountBalance.incentivesGivenIds = newIncentivesGivenIds;

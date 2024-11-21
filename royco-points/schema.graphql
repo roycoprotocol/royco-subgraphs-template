@@ -1,35 +1,46 @@
 type NewPointsProgram @entity(immutable: true) {
-  id: Bytes!
-  points: Bytes! # address
+  id: String!
+  points: String! # address
   name: String! # string
   symbol: String! # string
   blockNumber: BigInt!
   blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type OwnershipTransferStarted @entity(immutable: true) {
-  id: Bytes!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  transactionHash: String!
+  logIndex: BigInt!
 }
 
 type OwnershipTransferred @entity(immutable: true) {
-  id: Bytes!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
+  id: String!
+  previousOwner: String! # address
+  newOwner: String! # address
   blockNumber: BigInt!
   blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  transactionHash: String!
+  logIndex: BigInt!
 }
 
-type RecipeMarketHubAdded @entity(immutable: true) {
-  id: Bytes!
-  recipeMarketHub: Bytes! # address
+type RawPoint @entity {
+  id: String! # <CHAIN_ID>_<CONTRACT_ADDRESS>
+  chainId: BigInt! # Hardcoded
+  contractAddress: String! # Contract address
+  owner: String! # Owner
+  name: String! # Name
+  symbol: String! # Symbol
+  decimals: BigInt! # Decimals
   blockNumber: BigInt!
   blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  transactionHash: String!
+  logIndex: BigInt!
+}
+
+type RawPointBalance @entity {
+  id: String! # <CHAIN_ID>_<CONTRACT_ADDRESS>_<ACCOUNT_ADDRESS>
+  chainId: BigInt! # Hardcoded
+  contractAddress: String! # Contract address
+  accountAddress: String! # Account address
+  amount: BigInt! # Balance
+}
+
+type RawAward @entity {
+  id: String! # <CHAIN_ID>_<CONTRACT_ADDRESS>_<AWARD_ID>
 }

@@ -9,7 +9,7 @@ networks=(
     "base-sepolia"
     "base"
 )
-
+z
 # Function to delete pipeline with confirmation
 delete_pipeline() {
     local pipeline_name="royco-goldsky-pipeline" 
@@ -26,7 +26,7 @@ delete_subgraph() {
     local network=$1
 
     # Note: update version if needed
-    local subgraph_name="royco-vault-${network}/1.0.5" 
+    local subgraph_name="royco-vault-${network}/1.0.6" 
     
     echo "Attempting to delete ${subgraph_name}..."
     goldsky subgraph delete "${subgraph_name}" --force || true 
