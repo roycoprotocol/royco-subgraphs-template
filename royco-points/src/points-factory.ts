@@ -1,58 +1,55 @@
-import {
-  NewPointsProgram as NewPointsProgramEvent,
-  OwnershipTransferStarted as OwnershipTransferStartedEvent,
-  OwnershipTransferred as OwnershipTransferredEvent,
-  RecipeMarketHubAdded as RecipeMarketHubAddedEvent,
-} from "../generated/PointsFactory/PointsFactory";
-import {
-  NewPointsProgram,
-  OwnershipTransferStarted,
-  OwnershipTransferred,
-  RecipeMarketHubAdded,
-} from "../generated/schema";
+import { NewPointsProgram as NewPointsProgramEvent } from "../generated/PointsFactory/PointsFactory";
+import { NewPointsProgram, RawPoint } from "../generated/schema";
+import { Points as PointsProgram } from "../generated/templates/PointsProgramTemplate/Points";
+import { CHAIN_ID } from "./constants";
 
 export function handleNewPointsProgram(event: NewPointsProgramEvent): void {
   let entity = new NewPointsProgram(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    CHAIN_ID.toString()
+      .concat("_")
+      .concat(event.transaction.hash.toHexString())
+      .concat("_")
+      .concat(event.logIndex.toString())
   );
-  entity.points = event.params.points;
+
+  entity.points = event.params.points.toHexString();
   entity.name = event.params.name.toString();
   entity.symbol = event.params.symbol.toString();
 
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
-  entity.transactionHash = event.transaction.hash;
+  entity.transactionHash = event.transaction.hash.toHexString();
+  entity.logIndex = event.logIndex;
 
   entity.save();
-}
 
-export function handleOwnershipTransferred(
-  event: OwnershipTransferredEvent
-): void {
-  let entity = new OwnershipTransferred(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
-  entity.previousOwner = event.params.previousOwner;
-  entity.newOwner = event.params.newOwner;
+  /**
+   * Get details of the new Points program
+   */
+  let contract = PointsProgram.bind(event.params.points);
 
-  entity.blockNumber = event.block.number;
-  entity.blockTimestamp = event.block.timestamp;
-  entity.transactionHash = event.transaction.hash;
+  let nameResult = contract.try_name();
+  let symbolResult = contract.try_symbol();
+  let decimalsResult = contract.try_decimals();
+  let ownerResult = contract.try_owner();
 
-  entity.save();
-}
+  if (nameResult.reverted || symbolResult.reverted || decimalsResult.reverted) {
+    let rawPoint = new RawPoint(
+      CHAIN_ID.toString().concat("_").concat(event.params.points.toHexString())
+    );
 
-export function handleRecipeMarketHubAdded(
-  event: RecipeMarketHubAddedEvent
-): void {
-  let entity = new RecipeMarketHubAdded(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
-  entity.recipeMarketHub = event.params.recipeMarketHub;
+    rawPoint.chainId = CHAIN_ID;
+    rawPoint.contractAddress = event.params.points.toHexString();
+    rawPoint.owner = ownerResult.value.toHexString();
+    rawPoint.name = nameResult.value;
+    rawPoint.symbol = symbolResult.value;
+    rawPoint.decimals = decimalsResult.value;
 
-  entity.blockNumber = event.block.number;
-  entity.blockTimestamp = event.block.timestamp;
-  entity.transactionHash = event.transaction.hash;
+    rawPoint.blockNumber = event.block.number;
+    rawPoint.blockTimestamp = event.block.timestamp;
+    rawPoint.transactionHash = event.transaction.hash.toHexString();
+    rawPoint.logIndex = event.logIndex;
 
-  entity.save();
+    rawPoint.save();
+  }
 }

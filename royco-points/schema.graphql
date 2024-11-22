@@ -19,6 +19,35 @@ type OwnershipTransferred @entity(immutable: true) {
   logIndex: BigInt!
 }
 
+type Award @entity(immutable: true) {
+  id: String!
+  to: String! # address
+  amount: BigInt! # uint256
+  awardedBy: String! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  logIndex: BigInt!
+}
+
+type AllowedVaultAdded @entity(immutable: true) {
+  id: String!
+  vault: String! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  logIndex: BigInt!
+}
+
+type AllowedIPAdded @entity(immutable: true) {
+  id: String!
+  ip: String! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  logIndex: BigInt!
+}
+
 type RawPoint @entity {
   id: String! # <CHAIN_ID>_<CONTRACT_ADDRESS>
   chainId: BigInt! # Hardcoded
@@ -43,4 +72,20 @@ type RawPointBalance @entity {
 
 type RawAward @entity {
   id: String! # <CHAIN_ID>_<CONTRACT_ADDRESS>_<AWARD_ID>
+  chainId: BigInt! # Hardcoded
+  contractAddress: String! # Contract address of Points program
+  from: String! # From address
+  to: String! # To address
+  amount: BigInt! # Amount
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  logIndex: BigInt!
+}
+
+type AuthorizedPointIssuer @entity {
+  id: String! # <CHAIN_ID>_<CONTRACT_ADDRESS>_<ACCOUNT_ADDRESS>
+  chainId: BigInt! # Hardcoded
+  contractAddress: String! # Contract address
+  accountAddress: String! # Issuer address
 }

@@ -202,7 +202,7 @@ type RawAccountBalance @entity {
 
 type OwnershipTransferred @entity(immutable: true) {
   id: String!
-  user: String! # address
+  oldOwner: String! # address
   newOwner: String! # address
   blockNumber: BigInt!
   blockTimestamp: BigInt!

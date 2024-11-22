@@ -4,87 +4,49 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
-    name: WrappedVaultFactory
+    name: PointsFactory
     network: {{network}}
     source:
-      address: "{{wrappedVaultFactoryAddress}}"
-      abi: WrappedVaultFactory
-      startBlock: {{wrappedVaultFactoryStartBlock}}
+      address: "{{pointsFactoryAddress}}"
+      abi: PointsFactory
+      startBlock: {{pointsFactoryStartBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - WrappedVaultCreated
-      abis:
-        - name: WrappedVaultFactory
-          file: ./abis/WrappedVaultFactory.json
-      eventHandlers:
-        - event: WrappedVaultCreated(indexed address,indexed
-            address,address,address,uint256,string,string)
-          handler: handleWrappedVaultCreated
-      file: ./src/wrapped-vault-factory.ts
-  - kind: ethereum
-    name: VaultMarketHub
-    network: {{network}}
-    source:
-      address: "{{vaultMarketHubAddress}}"
-      abi: VaultMarketHub
-      startBlock: {{vaultMarketHubStartBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - APOfferCancelled
-        - APOfferCreated
-        - APOfferFilled
-      abis:
-        - name: VaultMarketHub
-          file: ./abis/VaultMarketHub.json
-      eventHandlers:
-        - event: APOfferCancelled(indexed uint256)
-          handler: handleAPOfferCancelled
-        - event: APOfferCreated(indexed uint256,indexed
-            address,address,uint256,address[],uint256[],uint256)
-          handler: handleAPOfferCreated
-        - event: APOfferFilled(indexed uint256,uint256)
-          handler: handleAPOfferFilled
-      file: ./src/vault-market-hub.ts
-templates:
-  - name: WrappedVaultTemplate
-    kind: ethereum/contract
-    network: {{network}}
-    source:
-      abi: WrappedVault
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - Deposit
-        - Withdraw
-        - RewardsSet
-        - RewardsTokenAdded
-        - FrontendFeeUpdated
+        - NewPointsProgram
+        - OwnershipTransferStarted
         - OwnershipTransferred
-        - Transfer
+        - RecipeMarketHubAdded
       abis:
-        - name: WrappedVault
-          file: ./abis/WrappedVault.json
+        - name: PointsFactory
+          file: ./abis/PointsFactory.json
       eventHandlers:
-        - event: Deposit(indexed address,indexed address,uint256,uint256)
-          handler: handleDeposit
-        - event: Withdraw(indexed address,indexed address,indexed address,uint256,uint256)
-          handler: handleWithdraw
-        - event: RewardsSet(address,uint32,uint32,uint256,uint256,uint256,uint256)
-          handler: handleRewardsSet
-        - event: RewardsTokenAdded(address)
-          handler: handleRewardsTokenAdded
-        - event: FrontendFeeUpdated(uint256)
-          handler: handleFrontendFeeUpdated
+        - event: NewPointsProgram(indexed address,indexed string,indexed string)
+          handler: handleNewPointsProgram
+        - event: OwnershipTransferStarted(indexed address,indexed address)
+          handler: handleOwnershipTransferStarted
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
-      file: ./src/wrapped-vault.ts
+        - event: RecipeMarketHubAdded(indexed address)
+          handler: handleRecipeMarketHubAdded
+      file: ./src/points-factory.ts
+# templates:
+#   - name: PointsTemplate
+#     kind: ethereum/contract
+#     network: {{network}}
+#     source:
+#       abi: Points
+#     mapping:
+#       kind: ethereum/events
+#       apiVersion: 0.0.7
+#       language: wasm/assemblyscript
+#       entities:
+#         - Point
+#         - AllowedVault
+#         - AllowedIP
+#         - Award
+#       abis:
+#         - name: Points
+#           file: ./abis/Points.json

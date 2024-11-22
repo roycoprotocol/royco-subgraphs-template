@@ -18,7 +18,7 @@ export function handleOwnershipTransferred(
       .concat(event.logIndex.toString())
   );
 
-  entity.user = event.params.user.toHexString();
+  entity.oldOwner = event.params.oldOwner.toHexString();
   entity.newOwner = event.params.newOwner.toHexString();
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
