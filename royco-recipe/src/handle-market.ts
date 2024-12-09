@@ -1,12 +1,7 @@
 import { BigInt } from "@graphprotocol/graph-ts";
 import { MarketCreated as MarketCreatedEvent } from "../generated/RecipeMarketHub/RecipeMarketHub";
-import { MarketCreated, RawActivity, RawMarket } from "../generated/schema";
-import {
-  CHAIN_ID,
-  MARKET_CREATED,
-  RECIPE_MARKET_TYPE,
-  NULL_ADDRESS,
-} from "./constants";
+import { MarketCreated, RawMarket } from "../generated/schema";
+import { CHAIN_ID, RECIPE_MARKET_TYPE, NULL_ADDRESS } from "./constants";
 
 export function handleMarketCreated(event: MarketCreatedEvent): void {
   let entity = new MarketCreated(
@@ -43,7 +38,6 @@ export function handleMarketCreated(event: MarketCreatedEvent): void {
   rawMarket.chainId = CHAIN_ID;
   rawMarket.marketType = RECIPE_MARKET_TYPE;
   rawMarket.marketId = event.params.marketHash.toHexString();
-  rawMarket.creator = event.transaction.from.toHexString();
   rawMarket.owner = NULL_ADDRESS;
   rawMarket.inputTokenId = CHAIN_ID.toString()
     .concat("-")
@@ -76,36 +70,5 @@ export function handleMarketCreated(event: MarketCreatedEvent): void {
   rawMarket.endTimestamps = [];
 
   rawMarket.save();
-  // ============== xxxxx ==============
-
-  // ============== ..... ==============
-  // New Raw Activity entity
-  let rawActivity = new RawActivity(
-    CHAIN_ID.toString()
-      .concat("_")
-      .concat(event.transaction.hash.toHexString())
-      .concat("_")
-      .concat(event.logIndex.toString())
-  );
-
-  rawActivity.chainId = CHAIN_ID;
-  rawActivity.marketType = RECIPE_MARKET_TYPE;
-  rawActivity.marketId = event.params.marketHash.toHexString();
-  rawActivity.accountAddress = event.transaction.from.toHexString();
-  rawActivity.activityType = MARKET_CREATED;
-  rawActivity.tokensGivenIds = [];
-  rawActivity.tokensGivenAmount = [];
-  rawActivity.tokensReceivedIds = [
-    CHAIN_ID.toString()
-      .concat("-")
-      .concat(event.params.inputToken.toHexString()),
-  ];
-  rawActivity.tokensReceivedAmount = [];
-  rawActivity.transactionHash = event.transaction.hash.toHexString();
-  rawActivity.blockNumber = event.block.number;
-  rawActivity.blockTimestamp = event.block.timestamp;
-  rawActivity.logIndex = event.logIndex;
-
-  rawActivity.save();
   // ============== xxxxx ==============
 }

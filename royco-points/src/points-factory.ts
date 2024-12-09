@@ -1,3 +1,4 @@
+import { BigInt } from "@graphprotocol/graph-ts";
 import { NewPointsProgram as NewPointsProgramEvent } from "../generated/PointsFactory/PointsFactory";
 import { NewPointsProgram, RawPoint } from "../generated/schema";
 import { Points as PointsProgram } from "../generated/templates/PointsProgramTemplate/Points";
@@ -44,6 +45,7 @@ export function handleNewPointsProgram(event: NewPointsProgramEvent): void {
     rawPoint.name = nameResult.value;
     rawPoint.symbol = symbolResult.value;
     rawPoint.decimals = decimalsResult.value;
+    rawPoint.totalSupply = BigInt.zero();
 
     rawPoint.blockNumber = event.block.number;
     rawPoint.blockTimestamp = event.block.timestamp;

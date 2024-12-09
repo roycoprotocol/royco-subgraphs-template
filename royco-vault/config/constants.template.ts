@@ -16,8 +16,6 @@ export const ARREAR_REWARD_STYLE = 1;
 export const FORFEITABLE_REWARD_STYLE = 2;
 
 // Activity Types
-export const MARKET_CREATED = "market_created";
-
 export const AP_OFFER_CREATED = "ap_offer_created";
 export const IP_OFFER_CREATED = "ip_offer_created";
 export const AP_OFFER_FILLED = "ap_offer_filled";

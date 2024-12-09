@@ -26,6 +26,7 @@ type APOfferCreated @entity(immutable: true) {
   id: String!
   offerId: BigInt! # uint256
   marketId: String! # address
+  ap: String! # address
   fundingVault: String! # address
   quantity: BigInt! # uint256
   incentivesRequested: [String!]! # address[]
@@ -61,7 +62,6 @@ type RawMarket @entity {
   chainId: BigInt! # Hardcoded
   marketType: Int! # Hardcoded
   marketId: String!
-  creator: String! # address
   owner: String! # address
   inputTokenId: String!
   lockupTime: BigInt!

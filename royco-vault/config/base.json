@@ -3,6 +3,6 @@
   "chainId": 8453,
   "wrappedVaultFactoryAddress": "0x75e502644284edf34421f9c355d75db79e343bca",
   "wrappedVaultFactoryStartBlock": 22754606,
-  "vaultMarketHubAddress": "0x52341389be638a5b8083d2b70a421f9d4c87ebcd",
-  "vaultMarketHubStartBlock": 21548421
+  "vaultMarketHubAddress": "0xa97ecc6bfda40baf2fdd096dd33e88bd8e769280",
+  "vaultMarketHubStartBlock": 23108127
 }

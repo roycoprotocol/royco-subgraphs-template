@@ -4,16 +4,16 @@
 networks=(
     "sepolia"
     "mainnet"
-    "arbitrum-sepolia"
     "arbitrum-one"
-    "base-sepolia"
     "base"
+    "plume"
+    "corn-maizenet"
 )
 
 # Function to prepare and deploy subgraph
 prepare_and_deploy() {
     local network=$1
-    local subgraph_name="royco-vault-${network}/1.0.23" # Note: update version if needed
+    local subgraph_name="royco-vault-${network}/1.0.27" # Note: update version if needed
     
     echo "Preparing and deploying ${subgraph_name}..."
     yarn prepare:${network} && graph codegen && graph build
@@ -28,6 +28,10 @@ prepare_and_deploy() {
 
 # Main execution
 echo "Starting subgraph management script..."
+
+# Clean up existing build and generated directories
+echo "Cleaning up build and generated directories..."
+rm -rf build generated
 
 # Then handle preparations and deployments
 echo -e "\n=== Preparation and Deployment Phase ==="

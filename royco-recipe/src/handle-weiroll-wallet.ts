@@ -4,6 +4,9 @@ import {
   WeirollWalletExecutedWithdrawal as WeirollWalletExecutedWithdrawalEvent,
   WeirollWalletClaimedIncentive as WeirollWalletClaimedIncentiveEvent,
 } from "../generated/RecipeMarketHub/RecipeMarketHub";
+
+import { WeirollWalletExecutedManually as WeirollWalletExecutedManuallyEvent } from "../generated/templates/WeirollWalletTemplate/WeirollWallet";
+
 import {
   RawAccountBalance,
   RawActivity,
@@ -12,6 +15,7 @@ import {
   WeirollWalletClaimedIncentive,
   WeirollWalletForfeited,
   WeirollWalletExecutedWithdrawal,
+  WeirollWalletExecutedManually,
 } from "../generated/schema";
 import {
   AP_OFFER_SIDE,
@@ -638,7 +642,170 @@ export function handleWeirollWalletExecutedWithdrawal(
     rawActivityAP.chainId = CHAIN_ID;
     rawActivityAP.marketType = RECIPE_MARKET_TYPE;
     rawActivityAP.marketId = rawPositionAP.marketId.toString();
-    rawActivityAP.accountAddress = event.transaction.from.toHexString();
+    rawActivityAP.accountAddress = rawPositionAP.accountAddress;
+    rawActivityAP.activityType = WEIROLL_WALLET_EXECUTED_WITHDRAWAL;
+    rawActivityAP.tokensGivenIds = [];
+    rawActivityAP.tokensGivenAmount = [];
+    rawActivityAP.tokensReceivedIds = [rawPositionAP.inputTokenId];
+    rawActivityAP.tokensReceivedAmount = [rawPositionAP.quantity];
+    rawActivityAP.transactionHash = event.transaction.hash.toHexString();
+    rawActivityAP.blockNumber = event.block.number;
+    rawActivityAP.blockTimestamp = event.block.timestamp;
+    rawActivityAP.logIndex = event.logIndex;
+
+    rawActivityAP.save();
+
+    // New Raw Activity for IP
+    let rawActivityIP = new RawActivity(
+      CHAIN_ID.toString()
+        .concat("_")
+        .concat(event.transaction.hash.toHexString())
+        .concat("_")
+        .concat(event.logIndex.toString())
+    );
+
+    rawActivityIP.chainId = CHAIN_ID;
+    rawActivityIP.marketType = RECIPE_MARKET_TYPE;
+    rawActivityIP.marketId = rawPositionIP.marketId.toString();
+    rawActivityIP.accountAddress = rawPositionIP.ip;
+    rawActivityIP.activityType = WEIROLL_WALLET_EXECUTED_WITHDRAWAL;
+    rawActivityIP.tokensGivenIds = [rawPositionIP.inputTokenId];
+    rawActivityIP.tokensGivenAmount = [rawPositionIP.quantity];
+    rawActivityIP.tokensReceivedIds = [];
+    rawActivityIP.tokensReceivedAmount = [];
+    rawActivityIP.transactionHash = event.transaction.hash.toHexString();
+    rawActivityIP.blockNumber = event.block.number;
+    rawActivityIP.blockTimestamp = event.block.timestamp;
+    rawActivityIP.logIndex = event.logIndex;
+
+    rawActivityIP.save();
+  }
+  // ============== xxxxx ==============
+}
+
+export function handleWeirollWalletExecutedManually(
+  event: WeirollWalletExecutedManuallyEvent
+): void {
+  let entity = new WeirollWalletExecutedManually(
+    CHAIN_ID.toString()
+      .concat("_")
+      .concat(event.transaction.hash.toHexString())
+      .concat("_")
+      .concat(event.logIndex.toString())
+  );
+
+  entity.blockNumber = event.block.number;
+  entity.blockTimestamp = event.block.timestamp;
+  entity.transactionHash = event.transaction.hash.toHexString();
+  entity.logIndex = event.logIndex;
+
+  entity.save();
+
+  // Get Raw Position entity for AP
+  let rawPositionAP = RawPosition.load(
+    CHAIN_ID.toString()
+      .concat("_")
+      .concat(event.address.toHexString())
+      .concat("_")
+      .concat(AP_OFFER_SIDE.toString())
+  );
+
+  // Get Raw Position entity for IP
+  let rawPositionIP = RawPosition.load(
+    CHAIN_ID.toString()
+      .concat("_")
+      .concat(event.address.toHexString())
+      .concat("_")
+      .concat(IP_OFFER_SIDE.toString())
+  );
+
+  // ============== ..... ==============
+  // Update Raw Position entity for AP & IP
+  if (
+    rawPositionAP != null &&
+    rawPositionIP != null &&
+    rawPositionAP.isWithdrawn == false &&
+    rawPositionIP.isWithdrawn == false
+  ) {
+    let rawAccountBalanceAP = RawAccountBalance.load(
+      CHAIN_ID.toString()
+        .concat("_")
+        .concat(RECIPE_MARKET_TYPE.toString())
+        .concat("_")
+        .concat(rawPositionAP.marketId)
+        .concat("_")
+        .concat(rawPositionAP.ap)
+    );
+
+    let rawAccountBalanceIP = RawAccountBalance.load(
+      CHAIN_ID.toString()
+        .concat("_")
+        .concat(RECIPE_MARKET_TYPE.toString())
+        .concat("_")
+        .concat(rawPositionIP.marketId)
+        .concat("_")
+        .concat(rawPositionIP.ip)
+    );
+
+    if (rawAccountBalanceAP != null && rawAccountBalanceIP != null) {
+      if (rawPositionAP.ap == rawPositionIP.ip) {
+        // Update account balance only once, that is for AP and IP together
+        rawAccountBalanceAP.quantityGivenAmount =
+          rawAccountBalanceAP.quantityGivenAmount.minus(rawPositionAP.quantity);
+        rawAccountBalanceAP.quantityReceivedAmount =
+          rawAccountBalanceAP.quantityReceivedAmount.minus(
+            rawPositionIP.quantity
+          );
+
+        // Save new accounts
+        rawAccountBalanceAP.save();
+      } else {
+        // Update account balance for AP and IP separately
+        // AP gets their quantity back
+        rawAccountBalanceAP.quantityGivenAmount =
+          rawAccountBalanceAP.quantityGivenAmount.minus(rawPositionAP.quantity);
+
+        // IP gives their quantity back
+        rawAccountBalanceIP.quantityReceivedAmount =
+          rawAccountBalanceIP.quantityReceivedAmount.minus(
+            rawPositionIP.quantity
+          );
+
+        // Save new accounts
+        rawAccountBalanceAP.save();
+        rawAccountBalanceIP.save();
+      }
+
+      rawPositionAP.isWithdrawn = true;
+      rawPositionAP.save();
+
+      rawPositionIP.isWithdrawn = true;
+      rawPositionIP.save();
+    }
+  }
+  // ============== xxxxx ==============
+
+  // ============== ..... ==============
+  // @note: We are not updating account balances here because we are keeping the track of quantity given/received and incentives given/received, instead of tokens in and tokens out.
+  // ============== xxxxx ==============
+
+  // ============== ..... ==============
+  if (rawPositionAP != null && rawPositionIP != null) {
+    // New Raw Activity for AP
+    let rawActivityAP = new RawActivity(
+      CHAIN_ID.toString()
+        .concat("_")
+        .concat(event.transaction.hash.toHexString())
+        .concat("_")
+        .concat(event.logIndex.toString())
+        .concat("_")
+        .concat(AP_OFFER_SIDE.toString())
+    );
+
+    rawActivityAP.chainId = CHAIN_ID;
+    rawActivityAP.marketType = RECIPE_MARKET_TYPE;
+    rawActivityAP.marketId = rawPositionAP.marketId.toString();
+    rawActivityAP.accountAddress = rawPositionAP.accountAddress;
     rawActivityAP.activityType = WEIROLL_WALLET_EXECUTED_WITHDRAWAL;
     rawActivityAP.tokensGivenIds = [];
     rawActivityAP.tokensGivenAmount = [];

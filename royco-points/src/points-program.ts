@@ -93,6 +93,18 @@ export function handleAward(event: AwardEvent): void {
   rawAward.save();
 
   /**
+   * Update RawPoint
+   */
+  let rawPoint = RawPoint.load(
+    CHAIN_ID.toString().concat("_").concat(event.address.toHexString())
+  );
+
+  if (rawPoint != null) {
+    rawPoint.totalSupply = rawPoint.totalSupply.plus(event.params.amount);
+    rawPoint.save();
+  }
+
+  /**
    * Update RawPointBalance
    */
   let rawPointBalance = RawPointBalance.load(
@@ -192,6 +204,5 @@ export function handleAllowedIPAdded(event: AllowedIPAddedEvent): void {
     );
   }
 
-  authorizedPointIssuer.status = true;
   authorizedPointIssuer.save();
 }

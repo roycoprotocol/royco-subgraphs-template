@@ -55,3 +55,10 @@ goldsky pipeline stop royco-vault
 ```bash
 goldsky pipeline delete royco-vault
 ```
+
+## Subgraph Notes
+
+### `RawAccountBalance` has following terminology:
+
+- `quantityGivenAmount` represents shares (NOT ASSETS)
+- `quantityReceivedAmount` represents assets

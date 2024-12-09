@@ -10,13 +10,13 @@ sources:
         version: {{recipe_version}}
       - name: royco-recipe-mainnet
         version: {{recipe_version}}
-      - name: royco-recipe-arbitrum-sepolia
-        version: {{recipe_version}}
       - name: royco-recipe-arbitrum-one
         version: {{recipe_version}}
-      - name: royco-recipe-base-sepolia
-        version: {{recipe_version}}
       - name: royco-recipe-base
+        version: {{recipe_version}}
+      - name: royco-recipe-plume
+        version: {{recipe_version}}
+      - name: royco-recipe-corn-maizenet
         version: {{recipe_version}}
     type: subgraph_entity
   recipe_raw_offer_reference:
@@ -26,13 +26,13 @@ sources:
         version: {{recipe_version}}
       - name: royco-recipe-mainnet
         version: {{recipe_version}}
-      - name: royco-recipe-arbitrum-sepolia
-        version: {{recipe_version}}
       - name: royco-recipe-arbitrum-one
         version: {{recipe_version}}
-      - name: royco-recipe-base-sepolia
-        version: {{recipe_version}}
       - name: royco-recipe-base
+        version: {{recipe_version}}
+      - name: royco-recipe-plume
+        version: {{recipe_version}}
+      - name: royco-recipe-corn-maizenet
         version: {{recipe_version}}
     type: subgraph_entity
   recipe_raw_activity_reference:
@@ -42,13 +42,13 @@ sources:
         version: {{recipe_version}}
       - name: royco-recipe-mainnet
         version: {{recipe_version}}
-      - name: royco-recipe-arbitrum-sepolia
-        version: {{recipe_version}}
       - name: royco-recipe-arbitrum-one
         version: {{recipe_version}}
-      - name: royco-recipe-base-sepolia
-        version: {{recipe_version}}
       - name: royco-recipe-base
+        version: {{recipe_version}}
+      - name: royco-recipe-plume
+        version: {{recipe_version}}
+      - name: royco-recipe-corn-maizenet
         version: {{recipe_version}}
     type: subgraph_entity
   recipe_raw_account_balance_reference:
@@ -58,13 +58,13 @@ sources:
         version: {{recipe_version}}
       - name: royco-recipe-mainnet
         version: {{recipe_version}}
-      - name: royco-recipe-arbitrum-sepolia
-        version: {{recipe_version}}
       - name: royco-recipe-arbitrum-one
         version: {{recipe_version}}
-      - name: royco-recipe-base-sepolia
-        version: {{recipe_version}}
       - name: royco-recipe-base
+        version: {{recipe_version}}
+      - name: royco-recipe-plume
+        version: {{recipe_version}}
+      - name: royco-recipe-corn-maizenet
         version: {{recipe_version}}
     type: subgraph_entity 
   recipe_raw_position_reference:
@@ -74,13 +74,13 @@ sources:
         version: {{recipe_version}}
       - name: royco-recipe-mainnet
         version: {{recipe_version}}
-      - name: royco-recipe-arbitrum-sepolia
-        version: {{recipe_version}}
       - name: royco-recipe-arbitrum-one
         version: {{recipe_version}}
-      - name: royco-recipe-base-sepolia
-        version: {{recipe_version}}
       - name: royco-recipe-base
+        version: {{recipe_version}}
+      - name: royco-recipe-plume
+        version: {{recipe_version}}
+      - name: royco-recipe-corn-maizenet
         version: {{recipe_version}}
     type: subgraph_entity
   vault_raw_market_reference:
@@ -90,13 +90,13 @@ sources:
         version: {{vault_version}}
       - name: royco-vault-mainnet
         version: {{vault_version}}
-      - name: royco-vault-arbitrum-sepolia
-        version: {{vault_version}}
       - name: royco-vault-arbitrum-one
         version: {{vault_version}}
-      - name: royco-vault-base-sepolia
-        version: {{vault_version}}
       - name: royco-vault-base
+        version: {{vault_version}}
+      - name: royco-vault-plume
+        version: {{vault_version}}
+      - name: royco-vault-corn-maizenet
         version: {{vault_version}}
     type: subgraph_entity
   vault_raw_offer_reference:
@@ -106,13 +106,13 @@ sources:
         version: {{vault_version}}
       - name: royco-vault-mainnet
         version: {{vault_version}}
-      - name: royco-vault-arbitrum-sepolia
-        version: {{vault_version}}
       - name: royco-vault-arbitrum-one
         version: {{vault_version}}
-      - name: royco-vault-base-sepolia
-        version: {{vault_version}}
       - name: royco-vault-base
+        version: {{vault_version}}
+      - name: royco-vault-plume
+        version: {{vault_version}}
+      - name: royco-vault-corn-maizenet
         version: {{vault_version}}
     type: subgraph_entity
   vault_raw_activity_reference:
@@ -122,13 +122,13 @@ sources:
         version: {{vault_version}}
       - name: royco-vault-mainnet
         version: {{vault_version}}
-      - name: royco-vault-arbitrum-sepolia
-        version: {{vault_version}}
       - name: royco-vault-arbitrum-one
         version: {{vault_version}}
-      - name: royco-vault-base-sepolia
-        version: {{vault_version}}
       - name: royco-vault-base
+        version: {{vault_version}}
+      - name: royco-vault-plume
+        version: {{vault_version}}
+      - name: royco-vault-corn-maizenet
         version: {{vault_version}}
     type: subgraph_entity
   vault_raw_account_balance_reference:
@@ -138,13 +138,13 @@ sources:
         version: {{vault_version}}
       - name: royco-vault-mainnet
         version: {{vault_version}}
-      - name: royco-vault-arbitrum-sepolia
-        version: {{vault_version}}
       - name: royco-vault-arbitrum-one
         version: {{vault_version}}
-      - name: royco-vault-base-sepolia
-        version: {{vault_version}}
       - name: royco-vault-base
+        version: {{vault_version}}
+      - name: royco-vault-plume
+        version: {{vault_version}}
+      - name: royco-vault-corn-maizenet
         version: {{vault_version}}
     type: subgraph_entity
 transforms: {}

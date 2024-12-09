@@ -25,6 +25,7 @@ import {
   NULL_ADDRESS,
   UPFRONT_REWARD_STYLE,
 } from "./constants";
+import { WeirollWalletTemplate } from "../generated/templates";
 
 export function handleIPOfferCreated(event: IPOfferCreatedEvent): void {
   let entity = new IPOfferCreated(
@@ -37,6 +38,7 @@ export function handleIPOfferCreated(event: IPOfferCreatedEvent): void {
   entity.offerId = event.params.offerID;
   entity.offerHash = event.params.offerHash.toHexString();
   entity.marketHash = event.params.marketHash.toHexString();
+  entity.ip = event.params.ip.toHexString();
   entity.quantity = event.params.quantity;
   entity.incentivesOffered = event.params.incentivesOffered.map<string>(
     (token: Address) => token.toHexString()
@@ -149,7 +151,7 @@ export function handleIPOfferCreated(event: IPOfferCreatedEvent): void {
     rawOffer.offerSide = IP_OFFER_SIDE;
     rawOffer.offerId = event.params.offerHash.toHexString();
     rawOffer.marketId = event.params.marketHash.toHexString();
-    rawOffer.creator = event.transaction.from.toHexString();
+    rawOffer.creator = event.params.ip.toHexString();
     rawOffer.fundingVault = NULL_ADDRESS;
     rawOffer.inputTokenId = rawMarket.inputTokenId;
     rawOffer.quantity = event.params.quantity;
@@ -182,7 +184,7 @@ export function handleIPOfferCreated(event: IPOfferCreatedEvent): void {
         .concat("_")
         .concat(event.params.marketHash.toHexString())
         .concat("_")
-        .concat(event.transaction.from.toHexString())
+        .concat(event.params.ip.toHexString())
     );
 
     if (rawAccountBalanceIP == null) {
@@ -193,13 +195,13 @@ export function handleIPOfferCreated(event: IPOfferCreatedEvent): void {
           .concat("_")
           .concat(event.params.marketHash.toHexString())
           .concat("_")
-          .concat(event.transaction.from.toHexString())
+          .concat(event.params.ip.toHexString())
       );
 
       rawAccountBalanceIP.chainId = CHAIN_ID;
       rawAccountBalanceIP.marketType = RECIPE_MARKET_TYPE;
       rawAccountBalanceIP.marketId = event.params.marketHash.toHexString();
-      rawAccountBalanceIP.accountAddress = event.transaction.from.toHexString();
+      rawAccountBalanceIP.accountAddress = event.params.ip.toHexString();
       rawAccountBalanceIP.inputTokenId = rawMarket.inputTokenId;
       rawAccountBalanceIP.quantityReceivedAmount = BigInt.zero();
       rawAccountBalanceIP.quantityGivenAmount = BigInt.zero();
@@ -266,7 +268,7 @@ export function handleIPOfferCreated(event: IPOfferCreatedEvent): void {
     rawActivity.chainId = CHAIN_ID;
     rawActivity.marketType = RECIPE_MARKET_TYPE;
     rawActivity.marketId = event.params.marketHash.toHexString();
-    rawActivity.accountAddress = event.transaction.from.toHexString();
+    rawActivity.accountAddress = event.params.ip.toHexString();
     rawActivity.activityType = IP_OFFER_CREATED;
     rawActivity.tokensGivenIds = event.params.incentivesOffered.map<string>(
       (token: Address) =>
@@ -297,6 +299,12 @@ export function handleIPOfferCreated(event: IPOfferCreatedEvent): void {
 }
 
 export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
+  // Extract the address of the Weiroll Wallet from the event
+  let weirollWalletAddress = event.params.weirollWallet;
+
+  // Dynamically create a new data source for the Weiroll Wallet contract
+  WeirollWalletTemplate.create(weirollWalletAddress);
+
   let entity = new IPOfferFilled(
     CHAIN_ID.toString()
       .concat("_")
@@ -306,6 +314,7 @@ export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
   );
 
   entity.offerHash = event.params.offerHash.toHexString();
+  entity.ap = event.params.ap.toHexString();
   entity.fillAmount = event.params.fillAmount;
   entity.weirollWallet = event.params.weirollWallet.toHexString();
   entity.incentiveAmounts = event.params.incentiveAmounts;
@@ -423,8 +432,8 @@ export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
       rawPositionAP.rewardStyle = rawMarket.rewardStyle;
       rawPositionAP.rawOfferSide = rawOffer.offerSide;
       rawPositionAP.rawOfferId = rawOffer.offerId;
-      rawPositionAP.accountAddress = event.transaction.from.toHexString();
-      rawPositionAP.ap = event.transaction.from.toHexString();
+      rawPositionAP.accountAddress = event.params.ap.toHexString();
+      rawPositionAP.ap = event.params.ap.toHexString();
       rawPositionAP.ip = rawOffer.creator;
       rawPositionAP.inputTokenId = rawMarket.inputTokenId;
       rawPositionAP.quantity = event.params.fillAmount;
@@ -483,7 +492,7 @@ export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
       rawPositionIP.rawOfferSide = rawOffer.offerSide;
       rawPositionIP.rawOfferId = rawOffer.offerId;
       rawPositionIP.accountAddress = rawOffer.creator;
-      rawPositionIP.ap = event.transaction.from.toHexString();
+      rawPositionIP.ap = event.params.ap.toHexString();
       rawPositionIP.ip = rawOffer.creator;
       rawPositionIP.inputTokenId = rawMarket.inputTokenId;
       rawPositionIP.quantity = event.params.fillAmount;
@@ -528,7 +537,7 @@ export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
           .concat("_")
           .concat(rawMarket.marketId)
           .concat("_")
-          .concat(event.transaction.from.toHexString())
+          .concat(event.params.ap.toHexString())
       );
 
       // Create Raw Account Balance entities if they don't exist
@@ -540,7 +549,7 @@ export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
             .concat("_")
             .concat(rawMarket.marketId)
             .concat("_")
-            .concat(rawOffer.creator)
+            .concat(event.params.ap.toHexString())
         );
 
         rawAccountBalanceAP.chainId = CHAIN_ID;
@@ -577,14 +586,13 @@ export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
             .concat("_")
             .concat(rawMarket.marketId)
             .concat("_")
-            .concat(event.transaction.from.toHexString())
+            .concat(rawOffer.creator)
         );
 
         rawAccountBalanceIP.chainId = CHAIN_ID;
         rawAccountBalanceIP.marketType = RECIPE_MARKET_TYPE;
         rawAccountBalanceIP.marketId = rawMarket.marketId;
-        rawAccountBalanceIP.accountAddress =
-          event.transaction.from.toHexString();
+        rawAccountBalanceIP.accountAddress = rawOffer.creator;
         rawAccountBalanceIP.inputTokenId = rawMarket.inputTokenId;
         rawAccountBalanceIP.quantityReceivedAmount = BigInt.zero();
         rawAccountBalanceIP.quantityGivenAmount = BigInt.zero();
@@ -596,7 +604,7 @@ export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
         rawAccountBalanceIP.frontendFeeAmounts = [];
       }
 
-      if (rawOffer.creator == event.transaction.from.toHexString()) {
+      if (rawOffer.creator == event.params.ap.toHexString()) {
         // Both AP and IP are the same
         // AP gives and AP receives
         rawAccountBalanceAP.quantityGivenAmount =
@@ -725,7 +733,7 @@ export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
         rawActivityAP.chainId = CHAIN_ID;
         rawActivityAP.marketType = RECIPE_MARKET_TYPE;
         rawActivityAP.marketId = rawMarket.marketId;
-        rawActivityAP.accountAddress = event.transaction.from.toHexString();
+        rawActivityAP.accountAddress = event.params.ap.toHexString();
         rawActivityAP.activityType = IP_OFFER_FILLED;
         rawActivityAP.tokensGivenIds = [rawMarket.inputTokenId];
         rawActivityAP.tokensGivenAmount = [event.params.fillAmount];
@@ -873,7 +881,7 @@ export function handleIPOfferCancelled(event: IPOfferCancelledEvent): void {
           .concat("_")
           .concat(rawMarket.marketId)
           .concat("_")
-          .concat(event.transaction.from.toHexString())
+          .concat(rawOffer.creator)
       );
 
       // Create Raw Account Balance entity for IP if it doesn't exist
@@ -885,14 +893,13 @@ export function handleIPOfferCancelled(event: IPOfferCancelledEvent): void {
             .concat("_")
             .concat(rawMarket.marketId)
             .concat("_")
-            .concat(event.transaction.from.toHexString())
+            .concat(rawOffer.creator)
         );
 
         rawAccountBalanceIP.chainId = CHAIN_ID;
         rawAccountBalanceIP.marketType = RECIPE_MARKET_TYPE;
         rawAccountBalanceIP.marketId = rawMarket.marketId;
-        rawAccountBalanceIP.accountAddress =
-          event.transaction.from.toHexString();
+        rawAccountBalanceIP.accountAddress = rawOffer.creator;
         rawAccountBalanceIP.inputTokenId = rawMarket.inputTokenId;
         rawAccountBalanceIP.quantityReceivedAmount = BigInt.zero();
         rawAccountBalanceIP.quantityGivenAmount = BigInt.zero();
@@ -966,7 +973,7 @@ export function handleIPOfferCancelled(event: IPOfferCancelledEvent): void {
       rawActivityIP.chainId = CHAIN_ID;
       rawActivityIP.marketType = RECIPE_MARKET_TYPE;
       rawActivityIP.marketId = rawOffer.marketId.toString();
-      rawActivityIP.accountAddress = event.transaction.from.toHexString();
+      rawActivityIP.accountAddress = rawOffer.creator;
       rawActivityIP.activityType = IP_OFFER_CANCELLED;
       rawActivityIP.tokensGivenIds = [];
       rawActivityIP.tokensGivenAmount = [];

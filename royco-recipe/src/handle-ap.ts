@@ -24,6 +24,7 @@ import {
   RECIPE_MARKET_TYPE,
   UPFRONT_REWARD_STYLE,
 } from "./constants";
+import { WeirollWalletTemplate } from "../generated/templates";
 
 export function handleAPOfferCreated(event: APOfferCreatedEvent): void {
   let entity = new APOfferCreated(
@@ -35,6 +36,7 @@ export function handleAPOfferCreated(event: APOfferCreatedEvent): void {
   );
   entity.offerId = event.params.offerID;
   entity.marketHash = event.params.marketHash.toHexString();
+  entity.ap = event.params.ap.toHexString();
   entity.fundingVault = event.params.fundingVault.toHexString();
   entity.quantity = event.params.quantity;
   entity.incentiveAddresses = event.params.incentiveAddresses.map<string>(
@@ -118,7 +120,7 @@ export function handleAPOfferCreated(event: APOfferCreatedEvent): void {
     rawOffer.offerSide = AP_OFFER_SIDE;
     rawOffer.offerId = event.params.offerID.toString();
     rawOffer.marketId = event.params.marketHash.toHexString();
-    rawOffer.creator = event.transaction.from.toHexString();
+    rawOffer.creator = event.params.ap.toHexString();
     rawOffer.fundingVault = event.params.fundingVault.toHexString();
     rawOffer.inputTokenId = rawMarket.inputTokenId;
     rawOffer.quantity = event.params.quantity;
@@ -159,7 +161,7 @@ export function handleAPOfferCreated(event: APOfferCreatedEvent): void {
     rawActivity.chainId = CHAIN_ID;
     rawActivity.marketType = RECIPE_MARKET_TYPE;
     rawActivity.marketId = event.params.marketHash.toHexString();
-    rawActivity.accountAddress = event.transaction.from.toHexString();
+    rawActivity.accountAddress = event.params.ap.toHexString();
     rawActivity.activityType = AP_OFFER_CREATED;
     rawActivity.tokensGivenIds = [rawMarket.inputTokenId];
     rawActivity.tokensGivenAmount = [event.params.quantity];
@@ -179,6 +181,12 @@ export function handleAPOfferCreated(event: APOfferCreatedEvent): void {
 }
 
 export function handleAPOfferFilled(event: APOfferFilledEvent): void {
+  // Extract the address of the Weiroll Wallet from the event
+  let weirollWalletAddress = event.params.weirollWallet;
+
+  // Dynamically create a new data source for the Weiroll Wallet contract
+  WeirollWalletTemplate.create(weirollWalletAddress);
+
   let entity = new APOfferFilled(
     CHAIN_ID.toString()
       .concat("_")
@@ -187,6 +195,7 @@ export function handleAPOfferFilled(event: APOfferFilledEvent): void {
       .concat(event.logIndex.toString())
   );
   entity.offerId = event.params.offerID;
+  entity.ip = event.params.ip.toHexString();
   entity.fillAmount = event.params.fillAmount;
   entity.weirollWallet = event.params.weirollWallet.toHexString();
   entity.incentiveAmounts = event.params.incentiveAmounts;
@@ -306,7 +315,7 @@ export function handleAPOfferFilled(event: APOfferFilledEvent): void {
       rawPositionAP.rawOfferId = rawOffer.offerId;
       rawPositionAP.accountAddress = rawOffer.creator;
       rawPositionAP.ap = rawOffer.creator;
-      rawPositionAP.ip = event.transaction.from.toHexString();
+      rawPositionAP.ip = event.params.ip.toHexString();
       rawPositionAP.inputTokenId = rawMarket.inputTokenId;
       rawPositionAP.quantity = event.params.fillAmount;
 
@@ -363,9 +372,9 @@ export function handleAPOfferFilled(event: APOfferFilledEvent): void {
       rawPositionIP.rewardStyle = rawMarket.rewardStyle;
       rawPositionIP.rawOfferSide = rawOffer.offerSide;
       rawPositionIP.rawOfferId = rawOffer.offerId;
-      rawPositionIP.accountAddress = event.transaction.from.toHexString();
+      rawPositionIP.accountAddress = event.params.ip.toHexString();
       rawPositionIP.ap = rawOffer.creator;
-      rawPositionIP.ip = event.transaction.from.toHexString();
+      rawPositionIP.ip = event.params.ip.toHexString();
       rawPositionIP.inputTokenId = rawMarket.inputTokenId;
       rawPositionIP.quantity = event.params.fillAmount;
 
@@ -420,7 +429,7 @@ export function handleAPOfferFilled(event: APOfferFilledEvent): void {
           .concat("_")
           .concat(rawMarket.marketId)
           .concat("_")
-          .concat(event.transaction.from.toHexString())
+          .concat(event.params.ip.toHexString())
       );
 
       // Create Raw Account Balance entities if they don't exist
@@ -459,14 +468,13 @@ export function handleAPOfferFilled(event: APOfferFilledEvent): void {
             .concat("_")
             .concat(rawMarket.marketId)
             .concat("_")
-            .concat(event.transaction.from.toHexString())
+            .concat(event.params.ip.toHexString())
         );
 
         rawAccountBalanceIP.chainId = CHAIN_ID;
         rawAccountBalanceIP.marketType = RECIPE_MARKET_TYPE;
         rawAccountBalanceIP.marketId = rawMarket.marketId;
-        rawAccountBalanceIP.accountAddress =
-          event.transaction.from.toHexString();
+        rawAccountBalanceIP.accountAddress = event.params.ip.toHexString();
         rawAccountBalanceIP.inputTokenId = rawMarket.inputTokenId;
         rawAccountBalanceIP.quantityReceivedAmount = BigInt.zero();
         rawAccountBalanceIP.quantityGivenAmount = BigInt.zero();
@@ -478,7 +486,7 @@ export function handleAPOfferFilled(event: APOfferFilledEvent): void {
         rawAccountBalanceIP.frontendFeeAmounts = [];
       }
 
-      if (rawOffer.creator == event.transaction.from.toHexString()) {
+      if (rawOffer.creator == event.params.ip.toHexString()) {
         // Both AP and IP are the same
         // AP gives and AP receives
         rawAccountBalanceAP.quantityGivenAmount =
@@ -661,7 +669,7 @@ export function handleAPOfferFilled(event: APOfferFilledEvent): void {
       rawActivityIP.chainId = CHAIN_ID;
       rawActivityIP.marketType = RECIPE_MARKET_TYPE;
       rawActivityIP.marketId = rawMarket.marketId;
-      rawActivityIP.accountAddress = event.transaction.from.toHexString();
+      rawActivityIP.accountAddress = event.params.ip.toHexString();
       rawActivityIP.activityType = AP_OFFER_FILLED;
       rawActivityIP.tokensGivenIds = rawOffer.tokenIds;
 
@@ -775,7 +783,7 @@ export function handleAPOfferCancelled(event: APOfferCancelledEvent): void {
       rawActivityAP.chainId = CHAIN_ID;
       rawActivityAP.marketType = RECIPE_MARKET_TYPE;
       rawActivityAP.marketId = rawOffer.marketId.toString();
-      rawActivityAP.accountAddress = event.transaction.from.toHexString();
+      rawActivityAP.accountAddress = rawOffer.creator;
       rawActivityAP.activityType = AP_OFFER_CANCELLED;
       rawActivityAP.tokensGivenIds = rawOffer.tokenIds;
       rawActivityAP.tokensGivenAmount = rawOffer.tokenAmounts;

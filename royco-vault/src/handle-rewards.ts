@@ -92,7 +92,7 @@ export function handleRewardsTokenAdded(event: RewardsTokenAddedEvent): void {
     rawActivity.marketType = VAULT_MARKET_TYPE;
     rawActivity.activityType = ADD_REWARD;
     rawActivity.marketId = event.address.toHexString();
-    rawActivity.accountAddress = event.transaction.from.toHexString();
+    rawActivity.accountAddress = rawMarket.owner;
     rawActivity.tokensGivenIds = [
       CHAIN_ID.toString().concat("-").concat(event.params.reward.toHexString()),
     ];
@@ -311,7 +311,7 @@ export function handleRewardsSet(event: RewardsSetEvent): void {
     rawActivity.marketType = VAULT_MARKET_TYPE;
     rawActivity.activityType = SET_REWARD;
     rawActivity.marketId = event.address.toHexString();
-    rawActivity.accountAddress = event.transaction.from.toHexString();
+    rawActivity.accountAddress = rawMarket.owner;
     rawActivity.tokensGivenIds = [
       CHAIN_ID.toString().concat("-").concat(event.params.reward.toHexString()),
     ];

@@ -33,6 +33,7 @@ export function handleAPOfferCreated(event: APOfferCreatedEvent): void {
   );
   entity.offerId = event.params.offerID;
   entity.marketId = event.params.marketID.toHexString();
+  entity.ap = event.params.ap.toHexString();
   entity.fundingVault = event.params.fundingVault.toHexString();
   entity.quantity = event.params.quantity;
   entity.incentivesRequested = event.params.incentivesRequested.map<string>(
@@ -88,7 +89,7 @@ export function handleAPOfferCreated(event: APOfferCreatedEvent): void {
     rawOffer.offerSide = AP_OFFER_SIDE;
     rawOffer.offerId = event.params.offerID.toString();
     rawOffer.marketId = event.params.marketID.toHexString();
-    rawOffer.creator = event.transaction.from.toHexString();
+    rawOffer.creator = event.params.ap.toHexString();
     rawOffer.fundingVault = event.params.fundingVault.toHexString();
     rawOffer.inputTokenId = rawMarket.inputTokenId;
     rawOffer.quantity = event.params.quantity;
@@ -129,7 +130,7 @@ export function handleAPOfferCreated(event: APOfferCreatedEvent): void {
     rawActivity.chainId = CHAIN_ID;
     rawActivity.marketType = VAULT_MARKET_TYPE;
     rawActivity.marketId = event.params.marketID.toHexString();
-    rawActivity.accountAddress = event.transaction.from.toHexString();
+    rawActivity.accountAddress = event.params.ap.toHexString();
     rawActivity.activityType = AP_OFFER_CREATED;
     rawActivity.tokensGivenIds = [rawMarket.inputTokenId];
     rawActivity.tokensGivenAmount = [event.params.quantity];
@@ -261,7 +262,7 @@ export function handleAPOfferFilled(event: APOfferFilledEvent): void {
       rawActivityIP.chainId = CHAIN_ID;
       rawActivityIP.marketType = VAULT_MARKET_TYPE;
       rawActivityIP.marketId = rawMarket.marketId;
-      rawActivityIP.accountAddress = event.transaction.from.toHexString();
+      rawActivityIP.accountAddress = rawMarket.owner;
       rawActivityIP.activityType = AP_OFFER_FILLED;
       rawActivityIP.tokensGivenIds = rawOffer.tokenIds;
       rawActivityIP.tokensGivenAmount = rawOffer.tokenAmounts;
@@ -348,7 +349,7 @@ export function handleAPOfferCancelled(event: APOfferCancelledEvent): void {
       rawActivityAP.chainId = CHAIN_ID;
       rawActivityAP.marketType = VAULT_MARKET_TYPE;
       rawActivityAP.marketId = rawOffer.marketId;
-      rawActivityAP.accountAddress = event.transaction.from.toHexString();
+      rawActivityAP.accountAddress = rawOffer.creator;
       rawActivityAP.activityType = AP_OFFER_CANCELLED;
       rawActivityAP.tokensGivenIds = rawOffer.tokenIds;
       rawActivityAP.tokensGivenAmount = rawOffer.tokenAmounts;

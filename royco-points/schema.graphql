@@ -56,6 +56,7 @@ type RawPoint @entity {
   name: String! # Name
   symbol: String! # Symbol
   decimals: BigInt! # Decimals
+  totalSupply: BigInt! # Total supply
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: String!

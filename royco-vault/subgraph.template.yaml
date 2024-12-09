@@ -46,7 +46,7 @@ dataSources:
         - event: APOfferCancelled(indexed uint256)
           handler: handleAPOfferCancelled
         - event: APOfferCreated(indexed uint256,indexed
-            address,address,uint256,address[],uint256[],uint256)
+            address,indexed address,address,uint256,address[],uint256[],uint256)
           handler: handleAPOfferCreated
         - event: APOfferFilled(indexed uint256,uint256)
           handler: handleAPOfferFilled

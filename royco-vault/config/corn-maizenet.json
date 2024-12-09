@@ -1,8 +1,8 @@
 {
-  "network": "sepolia",
-  "chainId": 11155111,
+  "network": "corn-maizenet",
+  "chainId": 21000000,
   "wrappedVaultFactoryAddress": "0x75e502644284edf34421f9c355d75db79e343bca",
-  "wrappedVaultFactoryStartBlock": 7132280,
+  "wrappedVaultFactoryStartBlock": 9044,
   "vaultMarketHubAddress": "0xa97ecc6bfda40baf2fdd096dd33e88bd8e769280",
-  "vaultMarketHubStartBlock": 7224973
+  "vaultMarketHubStartBlock": 9044
 }

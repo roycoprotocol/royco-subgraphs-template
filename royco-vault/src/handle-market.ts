@@ -1,11 +1,7 @@
 import { BigInt } from "@graphprotocol/graph-ts";
 import { WrappedVaultCreated as WrappedVaultCreatedEvent } from "../generated/WrappedVaultFactory/WrappedVaultFactory";
-import {
-  RawActivity,
-  RawMarket,
-  WrappedVaultCreated,
-} from "../generated/schema";
-import { CHAIN_ID, MARKET_CREATED, VAULT_MARKET_TYPE } from "./constants";
+import { RawMarket, WrappedVaultCreated } from "../generated/schema";
+import { CHAIN_ID, VAULT_MARKET_TYPE } from "./constants";
 import { WrappedVaultTemplate } from "../generated/templates";
 
 export function handleWrappedVaultCreated(
@@ -55,7 +51,6 @@ export function handleWrappedVaultCreated(
   rawMarket.chainId = CHAIN_ID;
   rawMarket.marketType = VAULT_MARKET_TYPE;
   rawMarket.marketId = event.params.incentivizedVaultAddress.toHexString();
-  rawMarket.creator = event.transaction.from.toHexString();
   rawMarket.owner = event.params.owner.toHexString();
   rawMarket.inputTokenId = CHAIN_ID.toString()
     .concat("-")
@@ -90,36 +85,5 @@ export function handleWrappedVaultCreated(
   rawMarket.endTimestamps = [];
 
   rawMarket.save();
-  // ============== xxxxx ==============
-
-  // ============== ..... ==============
-  // New Raw Activity entity
-  let rawActivity = new RawActivity(
-    CHAIN_ID.toString()
-      .concat("_")
-      .concat(event.transaction.hash.toHexString())
-      .concat("_")
-      .concat(event.logIndex.toString())
-  );
-
-  rawActivity.chainId = CHAIN_ID;
-  rawActivity.marketType = VAULT_MARKET_TYPE;
-  rawActivity.marketId = event.params.incentivizedVaultAddress.toHexString();
-  rawActivity.accountAddress = event.transaction.from.toHexString();
-  rawActivity.activityType = MARKET_CREATED;
-  rawActivity.tokensGivenIds = [];
-  rawActivity.tokensGivenAmount = [];
-  rawActivity.tokensReceivedIds = [
-    CHAIN_ID.toString()
-      .concat("-")
-      .concat(event.params.inputToken.toHexString()),
-  ];
-  rawActivity.tokensReceivedAmount = [];
-  rawActivity.transactionHash = event.transaction.hash.toHexString();
-  rawActivity.blockNumber = event.block.number;
-  rawActivity.blockTimestamp = event.block.timestamp;
-  rawActivity.logIndex = event.logIndex;
-
-  rawActivity.save();
   // ============== xxxxx ==============
 }

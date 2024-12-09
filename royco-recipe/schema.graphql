@@ -1,7 +1,7 @@
 type MarketCreated @entity(immutable: true) {
   id: String!
   marketId: BigInt! # uint256
-  marketHash: String! # String32
+  marketHash: String! # String
   inputToken: String! # address
   lockupTime: BigInt! # uint256
   frontendFee: BigInt! # uint256
@@ -15,7 +15,8 @@ type MarketCreated @entity(immutable: true) {
 type APOfferCreated @entity(immutable: true) {
   id: String!
   offerId: BigInt! # uint256
-  marketHash: String! # String32
+  marketHash: String! # String
+  ap: String! # address
   fundingVault: String! # address
   quantity: BigInt! # uint256
   incentiveAddresses: [String!]! # address[]
@@ -30,6 +31,7 @@ type APOfferCreated @entity(immutable: true) {
 type APOfferFilled @entity(immutable: true) {
   id: String!
   offerId: BigInt! # uint256
+  ip: String! # address
   fillAmount: BigInt! # uint256
   weirollWallet: String! # address
   incentiveAmounts: [BigInt!]! # uint256[]
@@ -53,8 +55,9 @@ type APOfferCancelled @entity(immutable: true) {
 type IPOfferCreated @entity(immutable: true) {
   id: String!
   offerId: BigInt! # uint256
-  offerHash: String! # String32
-  marketHash: String! # String32
+  offerHash: String! # String
+  marketHash: String! # String
+  ip: String! # address
   quantity: BigInt! # uint256
   incentivesOffered: [String!]! # address[]
   incentiveAmounts: [BigInt!]! # uint256[]
@@ -69,7 +72,8 @@ type IPOfferCreated @entity(immutable: true) {
 
 type IPOfferFilled @entity(immutable: true) {
   id: String!
-  offerHash: String! # String32
+  offerHash: String! # String
+  ap: String! # address
   fillAmount: BigInt! # uint256
   weirollWallet: String! # address
   incentiveAmounts: [BigInt!]! # uint256[]
@@ -83,7 +87,7 @@ type IPOfferFilled @entity(immutable: true) {
 
 type IPOfferCancelled @entity(immutable: true) {
   id: String!
-  offerHash: String! # String32
+  offerHash: String! # String
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: String!
@@ -110,6 +114,14 @@ type WeirollWalletExecutedWithdrawal @entity(immutable: true) {
   logIndex: BigInt!
 }
 
+type WeirollWalletExecutedManually @entity(immutable: true) {
+  id: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  logIndex: BigInt!
+}
+
 type WeirollWalletForfeited @entity(immutable: true) {
   id: String!
   weirollWallet: String! # address
@@ -124,7 +136,6 @@ type RawMarket @entity {
   chainId: BigInt! # Hardcoded
   marketType: Int! # Hardcoded
   marketId: String!
-  creator: String! # address
   owner: String! # address
   inputTokenId: String!
   lockupTime: BigInt!
