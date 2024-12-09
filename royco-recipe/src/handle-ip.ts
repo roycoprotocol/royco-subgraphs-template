@@ -555,7 +555,7 @@ export function handleIPOfferFilled(event: IPOfferFilledEvent): void {
         rawAccountBalanceAP.chainId = CHAIN_ID;
         rawAccountBalanceAP.marketType = RECIPE_MARKET_TYPE;
         rawAccountBalanceAP.marketId = rawMarket.marketId;
-        rawAccountBalanceAP.accountAddress = rawOffer.creator;
+        rawAccountBalanceAP.accountAddress = event.params.ap.toHexString();
         rawAccountBalanceAP.inputTokenId = rawMarket.inputTokenId;
         rawAccountBalanceAP.quantityReceivedAmount = BigInt.zero();
         rawAccountBalanceAP.quantityGivenAmount = BigInt.zero();
