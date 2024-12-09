@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "mustache config/versions.json config/royco-goldksy-pipeline.template.yaml > royco-goldsky-pipeline.yaml"
+    "prepare": "mustache config/versions.json config/royco-goldksy-pipeline.template.yaml > royco-goldsky-pipeline.yaml",
+    "prepare-test": "mustache config/versions.json config/royco-goldksy-pipeline.template.test.yaml > royco-goldsky-pipeline-test.yaml"
   },
   "keywords": [],
   "author": "",

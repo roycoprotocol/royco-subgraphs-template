@@ -20,6 +20,12 @@ npm install
 ./deploy-new-pipelines.sh
 ```
 
+#### Deploy New Test Pipelines
+
+```bash
+./deploy-new-test-pipelines.sh
+```
+
 ### Prepare
 
 ```bash
