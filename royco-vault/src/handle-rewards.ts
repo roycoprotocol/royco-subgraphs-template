@@ -212,33 +212,35 @@ export function handleRewardsSet(event: RewardsSetEvent): void {
 
       let volumeAmountIndex = newVolumeTokenIds.indexOf(volumeTokenId);
 
-      // Calculate rewards amount
-      let rewardsAmount = BigInt.zero();
+      // // Calculate rewards amount
+      // let rewardsAmount = BigInt.zero();
 
-      if (event.params.rate == BigInt.zero()) {
-        rewardsAmount = rawMarket.incentivesOfferedAmount[index];
-        newIncentivesGivenAmount[rawAccountBalanceIncentiveIndex] =
-          newIncentivesGivenAmount[rawAccountBalanceIncentiveIndex].minus(
-            rewardsAmount
-          );
-      } else {
-        // These rewards will be added
-        rewardsAmount = event.params.totalRewards;
-        newIncentivesGivenAmount[rawAccountBalanceIncentiveIndex] =
-          newIncentivesGivenAmount[rawAccountBalanceIncentiveIndex].plus(
-            rewardsAmount
-          );
-      }
+      // if (event.params.rate == BigInt.zero()) {
+      //   rewardsAmount = rawMarket.incentivesOfferedAmount[index];
+      //   newIncentivesGivenAmount[rawAccountBalanceIncentiveIndex] =
+      //     newIncentivesGivenAmount[rawAccountBalanceIncentiveIndex].minus(
+      //       rewardsAmount
+      //     );
+      // } else {
+      //   // These rewards will be added
+      //   rewardsAmount = event.params.totalRewards;
+      //   newIncentivesGivenAmount[rawAccountBalanceIncentiveIndex] =
+      //     newIncentivesGivenAmount[rawAccountBalanceIncentiveIndex].plus(
+      //       rewardsAmount
+      //     );
+      // }
 
       // Update volumeAmounts
       if (event.params.rate == BigInt.zero()) {
         // Rewards are removed
-        newVolumeAmounts[volumeAmountIndex] =
-          newVolumeAmounts[volumeAmountIndex].minus(rewardsAmount);
+        newVolumeAmounts[volumeAmountIndex] = newVolumeAmounts[
+          volumeAmountIndex
+        ].minus(rawMarket.incentivesOfferedAmount[index]);
       } else {
         // Rewards are added
-        newVolumeAmounts[volumeAmountIndex] =
-          newVolumeAmounts[volumeAmountIndex].plus(rewardsAmount);
+        newVolumeAmounts[volumeAmountIndex] = newVolumeAmounts[
+          volumeAmountIndex
+        ].plus(event.params.totalRewards);
       }
 
       // Update volumeAmounts
@@ -253,35 +255,35 @@ export function handleRewardsSet(event: RewardsSetEvent): void {
       /**
        * @note New reward data setting
        */
-      let contract = WrappedVault.bind(event.address);
+      // let contract = WrappedVault.bind(event.address);
 
-      // Call the mapping using try/catch
-      let rewardIntervalResult = contract.try_rewardToInterval(
-        event.params.reward
-      );
-      if (!rewardIntervalResult.reverted) {
-        rawMarket.startTimestamps[index] = rewardIntervalResult.value.value0;
-        rawMarket.endTimestamps[index] = rewardIntervalResult.value.value1;
-        rawMarket.incentivesRates[index] = rewardIntervalResult.value.value2;
-      }
+      // // Call the mapping using try/catch
+      // let rewardIntervalResult = contract.try_rewardToInterval(
+      //   event.params.reward
+      // );
+      // if (!rewardIntervalResult.reverted) {
+      //   rawMarket.startTimestamps[index] = rewardIntervalResult.value.value0;
+      //   rawMarket.endTimestamps[index] = rewardIntervalResult.value.value1;
+      //   rawMarket.incentivesRates[index] = rewardIntervalResult.value.value2;
+      // }
 
       /**
        * @note Temporarily changed rewards to get data from functions
        */
-      // // Update startTimestamps
-      // let newStartTimestamps = rawMarket.startTimestamps;
-      // newStartTimestamps[index] = event.params.start;
-      // rawMarket.startTimestamps = newStartTimestamps;
+      // Update startTimestamps
+      let newStartTimestamps = rawMarket.startTimestamps;
+      newStartTimestamps[index] = event.params.start;
+      rawMarket.startTimestamps = newStartTimestamps;
 
-      // // Update endTimestamps
-      // let newEndTimestamps = rawMarket.endTimestamps;
-      // newEndTimestamps[index] = event.params.end;
-      // rawMarket.endTimestamps = newEndTimestamps;
+      // Update endTimestamps
+      let newEndTimestamps = rawMarket.endTimestamps;
+      newEndTimestamps[index] = event.params.end;
+      rawMarket.endTimestamps = newEndTimestamps;
 
-      // // Update incentivesRates
-      // let newIncentivesRates = rawMarket.incentivesRates;
-      // newIncentivesRates[index] = event.params.rate;
-      // rawMarket.incentivesRates = newIncentivesRates;
+      // Update incentivesRates
+      let newIncentivesRates = rawMarket.incentivesRates;
+      newIncentivesRates[index] = event.params.rate;
+      rawMarket.incentivesRates = newIncentivesRates;
 
       // Update Raw Account Balance entity
       rawAccountBalance.incentivesGivenIds = newIncentivesGivenIds;
