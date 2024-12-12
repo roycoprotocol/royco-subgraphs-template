@@ -68,23 +68,23 @@ export function handleDeposit(event: DepositEvent): void {
       event.params.shares
     );
 
-    // ============== ..... ==============
-    // Update incentives rates
-    let incentivesRates = rawMarket.incentivesRates;
-    for (let i = 0; i < rawMarket.incentivesOfferedIds.length; i++) {
-      let incentiveOfferedAddress = Address.fromString(
-        rawMarket.incentivesOfferedIds[i].split("-")[1]
-      );
+    // // ============== ..... ==============
+    // // Update incentives rates
+    // let incentivesRates = rawMarket.incentivesRates;
+    // for (let i = 0; i < rawMarket.incentivesOfferedIds.length; i++) {
+    //   let incentiveOfferedAddress = Address.fromString(
+    //     rawMarket.incentivesOfferedIds[i].split("-")[1]
+    //   );
 
-      let incentiveRateResult = contract.try_currentRewardsPerToken(
-        incentiveOfferedAddress
-      );
-      if (!incentiveRateResult.reverted) {
-        incentivesRates[i] = incentiveRateResult.value;
-      }
-    }
-    rawMarket.incentivesRates = incentivesRates;
-    // ============== xxxxx ==============
+    //   let incentiveRateResult = contract.try_currentRewardsPerToken(
+    //     incentiveOfferedAddress
+    //   );
+    //   if (!incentiveRateResult.reverted) {
+    //     incentivesRates[i] = incentiveRateResult.value;
+    //   }
+    // }
+    // rawMarket.incentivesRates = incentivesRates;
+    // // ============== xxxxx ==============
 
     // Update volume token ids and amounts
     let volumeTokenIds = rawMarket.volumeTokenIds;
@@ -294,23 +294,23 @@ export function handleWithdraw(event: WithdrawEvent): void {
       event.params.shares
     );
 
-    // ============== ..... ==============
-    // Update incentives rates
-    let incentivesRates = rawMarket.incentivesRates;
-    for (let i = 0; i < rawMarket.incentivesOfferedIds.length; i++) {
-      let incentiveOfferedAddress = Address.fromString(
-        rawMarket.incentivesOfferedIds[i].split("-")[1]
-      );
+    // // ============== ..... ==============
+    // // Update incentives rates
+    // let incentivesRates = rawMarket.incentivesRates;
+    // for (let i = 0; i < rawMarket.incentivesOfferedIds.length; i++) {
+    //   let incentiveOfferedAddress = Address.fromString(
+    //     rawMarket.incentivesOfferedIds[i].split("-")[1]
+    //   );
 
-      let incentiveRateResult = contract.try_currentRewardsPerToken(
-        incentiveOfferedAddress
-      );
-      if (!incentiveRateResult.reverted) {
-        incentivesRates[i] = incentiveRateResult.value;
-      }
-    }
-    rawMarket.incentivesRates = incentivesRates;
-    // ============== xxxxx ==============
+    //   let incentiveRateResult = contract.try_currentRewardsPerToken(
+    //     incentiveOfferedAddress
+    //   );
+    //   if (!incentiveRateResult.reverted) {
+    //     incentivesRates[i] = incentiveRateResult.value;
+    //   }
+    // }
+    // rawMarket.incentivesRates = incentivesRates;
+    // // ============== xxxxx ==============
 
     rawMarket.save();
   }
