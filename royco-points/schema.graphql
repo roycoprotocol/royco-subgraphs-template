@@ -84,7 +84,7 @@ type RawAward @entity {
   logIndex: BigInt!
 }
 
-type AuthorizedPointIssuer @entity {
+type RawAuthorizedPointIssuer @entity {
   id: String! # <CHAIN_ID>_<CONTRACT_ADDRESS>_<ACCOUNT_ADDRESS>
   chainId: BigInt! # Hardcoded
   contractAddress: String! # Contract address

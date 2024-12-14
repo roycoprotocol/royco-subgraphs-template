@@ -147,6 +147,70 @@ sources:
       - name: royco-vault-corn-maizenet
         version: {{vault_version}}
     type: subgraph_entity
+  points_raw_points_reference:
+    name: raw_point
+    subgraphs:
+      - name: royco-points-sepolia
+        version: {{points_version}}
+      - name: royco-points-mainnet
+        version: {{points_version}}
+      - name: royco-points-arbitrum-one
+        version: {{points_version}}
+      - name: royco-points-base
+        version: {{points_version}}
+      - name: royco-points-plume
+        version: {{points_version}}
+      - name: royco-points-corn-maizenet
+        version: {{points_version}}
+    type: subgraph_entity
+  points_raw_point_balances_reference:
+    name: raw_point_balance
+    subgraphs:
+      - name: royco-points-sepolia
+        version: {{points_version}}
+      - name: royco-points-mainnet
+        version: {{points_version}}
+      - name: royco-points-arbitrum-one
+        version: {{points_version}}
+      - name: royco-points-base
+        version: {{points_version}}
+      - name: royco-points-plume
+        version: {{points_version}}
+      - name: royco-points-corn-maizenet
+        version: {{points_version}}
+    type: subgraph_entity
+  points_raw_awards_reference:
+    name: raw_award
+    subgraphs:
+      - name: royco-points-sepolia
+        version: {{points_version}}
+      - name: royco-points-mainnet
+        version: {{points_version}}
+      - name: royco-points-arbitrum-one
+        version: {{points_version}}
+      - name: royco-points-base
+        version: {{points_version}}
+      - name: royco-points-plume
+        version: {{points_version}}
+      - name: royco-points-corn-maizenet
+        version: {{points_version}}
+    type: subgraph_entity
+  points_raw_authorized_point_issuers_reference:
+    name: raw_authorized_point_issuer
+    subgraphs:
+      - name: royco-points-sepolia
+        version: {{points_version}}
+      - name: royco-points-mainnet
+        version: {{points_version}}
+      - name: royco-points-arbitrum-one
+        version: {{points_version}}
+      - name: royco-points-base
+        version: {{points_version}}
+      - name: royco-points-plume
+        version: {{points_version}}
+      - name: royco-points-corn-maizenet
+        version: {{points_version}}
+    type: subgraph_entity
 transforms: {}
 sinks:
   recipe_postgres_raw_market:
@@ -212,3 +276,31 @@ sinks:
     secret_name: SUPABASE_ROYCO_FRONTEND
     description: "Postgres sink for: raw_account_balance"
     from: vault_raw_account_balance_reference
+  points_postgres_raw_points:
+    type: postgres
+    table: raw_points
+    schema: public
+    secret_name: SUPABASE_ROYCO_FRONTEND
+    description: "Postgres sink for: raw_points"
+    from: points_raw_points_reference
+  points_postgres_raw_point_balances:
+    type: postgres
+    table: raw_point_balances
+    schema: public
+    secret_name: SUPABASE_ROYCO_FRONTEND
+    description: "Postgres sink for: raw_point_balances"
+    from: points_raw_point_balances_reference
+  points_postgres_raw_awards:
+    type: postgres
+    table: raw_awards
+    schema: public
+    secret_name: SUPABASE_ROYCO_FRONTEND
+    description: "Postgres sink for: raw_awards"
+    from: points_raw_awards_reference
+  points_postgres_raw_authorized_point_issuers:
+    type: postgres
+    table: raw_authorized_point_issuers
+    schema: public
+    secret_name: SUPABASE_ROYCO_FRONTEND
+    description: "Postgres sink for: raw_authorized_point_issuers"
+    from: points_raw_authorized_point_issuers_reference

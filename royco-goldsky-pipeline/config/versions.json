@@ -1,4 +1,5 @@
 {
   "vault_version": "1.0.31",
-  "recipe_version": "1.0.24"
+  "recipe_version": "1.0.24",
+  "points_version": "1.0.9"
 }

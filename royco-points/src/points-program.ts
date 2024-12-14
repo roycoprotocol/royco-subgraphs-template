@@ -12,9 +12,11 @@ import {
   Award,
   AllowedVaultAdded,
   AllowedIPAdded,
-  AuthorizedPointIssuer,
+  RawAuthorizedPointIssuer,
 } from "../generated/schema";
 import { CHAIN_ID } from "./constants";
+import { Points as PointsProgram } from "../generated/templates/PointsProgramTemplate/Points";
+import { BigInt } from "@graphprotocol/graph-ts";
 
 export function handleOwnershipTransferred(
   event: OwnershipTransferredEvent
@@ -38,14 +40,42 @@ export function handleOwnershipTransferred(
   entity.save();
 
   /**
-   * Update RawPoint
+   * Get details of the new Points program
    */
+  let contract = PointsProgram.bind(event.address);
+
+  let nameResult = contract.try_name();
+  let symbolResult = contract.try_symbol();
+  let decimalsResult = contract.try_decimals();
+
   let rawPoint = RawPoint.load(
-    CHAIN_ID.toString().concat("_").concat(event.address.toHexString())
+    CHAIN_ID.toString().concat("-").concat(event.address.toHexString())
   );
 
-  if (rawPoint != null) {
+  if (
+    !nameResult.reverted &&
+    !symbolResult.reverted &&
+    !decimalsResult.reverted
+  ) {
+    if (rawPoint == null) {
+      rawPoint = new RawPoint(
+        CHAIN_ID.toString().concat("-").concat(event.address.toHexString())
+      );
+    }
+
+    rawPoint.chainId = CHAIN_ID;
+    rawPoint.contractAddress = event.address.toHexString();
     rawPoint.owner = event.params.newOwner.toHexString();
+    rawPoint.name = nameResult.value;
+    rawPoint.symbol = symbolResult.value;
+    rawPoint.decimals = decimalsResult.value;
+    rawPoint.totalSupply = BigInt.zero();
+
+    rawPoint.blockNumber = event.block.number;
+    rawPoint.blockTimestamp = event.block.timestamp;
+    rawPoint.transactionHash = event.transaction.hash.toHexString();
+    rawPoint.logIndex = event.logIndex;
+
     rawPoint.save();
   }
 }
@@ -81,6 +111,9 @@ export function handleAward(event: AwardEvent): void {
       .concat(event.logIndex.toString())
   );
 
+  rawAward.chainId = CHAIN_ID;
+  rawAward.contractAddress = event.address.toHexString();
+
   rawAward.from = event.params.awardedBy.toHexString();
   rawAward.to = event.params.to.toHexString();
   rawAward.amount = event.params.amount;
@@ -96,7 +129,7 @@ export function handleAward(event: AwardEvent): void {
    * Update RawPoint
    */
   let rawPoint = RawPoint.load(
-    CHAIN_ID.toString().concat("_").concat(event.address.toHexString())
+    CHAIN_ID.toString().concat("-").concat(event.address.toHexString())
   );
 
   if (rawPoint != null) {
@@ -123,9 +156,15 @@ export function handleAward(event: AwardEvent): void {
         .concat("_")
         .concat(event.params.to.toHexString())
     );
+
+    rawPointBalance.chainId = CHAIN_ID;
+    rawPointBalance.amount = BigInt.zero();
   }
 
+  rawPointBalance.contractAddress = event.address.toHexString();
+  rawPointBalance.accountAddress = event.params.to.toHexString();
   rawPointBalance.amount = rawPointBalance.amount.plus(event.params.amount);
+
   rawPointBalance.save();
 }
 
@@ -148,9 +187,9 @@ export function handleAllowedVaultAdded(event: AllowedVaultAddedEvent): void {
   entity.save();
 
   /**
-   * Update AuthorizedPointIssuer
+   * Update RawAuthorizedPointIssuer
    */
-  let authorizedPointIssuer = new AuthorizedPointIssuer(
+  let rawAuthorizedPointIssuer = RawAuthorizedPointIssuer.load(
     CHAIN_ID.toString()
       .concat("_")
       .concat(event.address.toHexString())
@@ -158,11 +197,21 @@ export function handleAllowedVaultAdded(event: AllowedVaultAddedEvent): void {
       .concat(event.params.vault.toHexString())
   );
 
-  authorizedPointIssuer.chainId = CHAIN_ID;
-  authorizedPointIssuer.contractAddress = event.address.toHexString();
-  authorizedPointIssuer.accountAddress = event.params.vault.toHexString();
+  if (rawAuthorizedPointIssuer == null) {
+    rawAuthorizedPointIssuer = new RawAuthorizedPointIssuer(
+      CHAIN_ID.toString()
+        .concat("_")
+        .concat(event.address.toHexString())
+        .concat("_")
+        .concat(event.params.vault.toHexString())
+    );
+  }
 
-  authorizedPointIssuer.save();
+  rawAuthorizedPointIssuer.chainId = CHAIN_ID;
+  rawAuthorizedPointIssuer.contractAddress = event.address.toHexString();
+  rawAuthorizedPointIssuer.accountAddress = event.params.vault.toHexString();
+
+  rawAuthorizedPointIssuer.save();
 }
 
 export function handleAllowedIPAdded(event: AllowedIPAddedEvent): void {
@@ -184,9 +233,9 @@ export function handleAllowedIPAdded(event: AllowedIPAddedEvent): void {
   entity.save();
 
   /**
-   * Update AuthorizedPointIssuer
+   * Update RawAuthorizedPointIssuer
    */
-  let authorizedPointIssuer = AuthorizedPointIssuer.load(
+  let rawAuthorizedPointIssuer = RawAuthorizedPointIssuer.load(
     CHAIN_ID.toString()
       .concat("_")
       .concat(event.address.toHexString())
@@ -194,8 +243,8 @@ export function handleAllowedIPAdded(event: AllowedIPAddedEvent): void {
       .concat(event.params.ip.toHexString())
   );
 
-  if (authorizedPointIssuer == null) {
-    authorizedPointIssuer = new AuthorizedPointIssuer(
+  if (rawAuthorizedPointIssuer == null) {
+    rawAuthorizedPointIssuer = new RawAuthorizedPointIssuer(
       CHAIN_ID.toString()
         .concat("_")
         .concat(event.address.toHexString())
@@ -204,5 +253,9 @@ export function handleAllowedIPAdded(event: AllowedIPAddedEvent): void {
     );
   }
 
-  authorizedPointIssuer.save();
+  rawAuthorizedPointIssuer.chainId = CHAIN_ID;
+  rawAuthorizedPointIssuer.contractAddress = event.address.toHexString();
+  rawAuthorizedPointIssuer.accountAddress = event.params.ip.toHexString();
+
+  rawAuthorizedPointIssuer.save();
 }

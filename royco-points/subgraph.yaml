@@ -5,11 +5,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: PointsFactory
-    network: mainnet
+    network: corn-maizenet
     source:
-      address: "0x5c69bee701efa4be230a65e828cdd4ed286f1bb1"
+      address: "0x19112adbdafb465ddf0b57ecc07e68110ad09c50"
       abi: PointsFactory
-      startBlock: 17425744
+      startBlock: 9042
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -26,7 +26,7 @@ dataSources:
 templates:
   - name: PointsProgramTemplate
     kind: ethereum/contract
-    network: mainnet
+    network: corn-maizenet
     source:
       abi: Points
     mapping:

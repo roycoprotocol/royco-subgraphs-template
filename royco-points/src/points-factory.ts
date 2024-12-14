@@ -1,10 +1,15 @@
-import { BigInt } from "@graphprotocol/graph-ts";
 import { NewPointsProgram as NewPointsProgramEvent } from "../generated/PointsFactory/PointsFactory";
-import { NewPointsProgram, RawPoint } from "../generated/schema";
-import { Points as PointsProgram } from "../generated/templates/PointsProgramTemplate/Points";
+import { NewPointsProgram } from "../generated/schema";
 import { CHAIN_ID } from "./constants";
+import { PointsProgramTemplate } from "../generated/templates";
 
 export function handleNewPointsProgram(event: NewPointsProgramEvent): void {
+  // Extract the address of the new child contract (ERC4626i)
+  let pointsProgramAddress = event.params.points;
+
+  // Dynamically create a new data source for the ERC4626i contract
+  PointsProgramTemplate.create(pointsProgramAddress);
+
   let entity = new NewPointsProgram(
     CHAIN_ID.toString()
       .concat("_")
@@ -23,35 +28,4 @@ export function handleNewPointsProgram(event: NewPointsProgramEvent): void {
   entity.logIndex = event.logIndex;
 
   entity.save();
-
-  /**
-   * Get details of the new Points program
-   */
-  let contract = PointsProgram.bind(event.params.points);
-
-  let nameResult = contract.try_name();
-  let symbolResult = contract.try_symbol();
-  let decimalsResult = contract.try_decimals();
-  let ownerResult = contract.try_owner();
-
-  if (nameResult.reverted || symbolResult.reverted || decimalsResult.reverted) {
-    let rawPoint = new RawPoint(
-      CHAIN_ID.toString().concat("_").concat(event.params.points.toHexString())
-    );
-
-    rawPoint.chainId = CHAIN_ID;
-    rawPoint.contractAddress = event.params.points.toHexString();
-    rawPoint.owner = ownerResult.value.toHexString();
-    rawPoint.name = nameResult.value;
-    rawPoint.symbol = symbolResult.value;
-    rawPoint.decimals = decimalsResult.value;
-    rawPoint.totalSupply = BigInt.zero();
-
-    rawPoint.blockNumber = event.block.number;
-    rawPoint.blockTimestamp = event.block.timestamp;
-    rawPoint.transactionHash = event.transaction.hash.toHexString();
-    rawPoint.logIndex = event.logIndex;
-
-    rawPoint.save();
-  }
 }
