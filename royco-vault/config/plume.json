@@ -1,8 +1,8 @@
 {
   "network": "plume",
   "chainId": 98865,
-  "wrappedVaultFactoryAddress": "0x75e502644284edf34421f9c355d75db79e343bca",
-  "wrappedVaultFactoryStartBlock": 60710,
-  "vaultMarketHubAddress": "0xa97ecc6bfda40baf2fdd096dd33e88bd8e769280",
-  "vaultMarketHubStartBlock": 60712
+  "wrappedVaultFactoryAddress": "0x476d38677c25c3759e527b3d87ce95b5be5c0195",
+  "wrappedVaultFactoryStartBlock": 115198,
+  "vaultMarketHubAddress": "0xa8750939e2bb0fbf6232bdeb6eb9d09e2d3e60ee",
+  "vaultMarketHubStartBlock": 115199
 }

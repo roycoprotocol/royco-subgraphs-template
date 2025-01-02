@@ -13,7 +13,7 @@ networks=(
 # Function to prepare and deploy subgraph
 prepare_and_deploy() {
     local network=$1
-    local subgraph_name="royco-points-${network}/1.0.9" # Note: update version if needed
+    local subgraph_name="royco-points-${network}/1.0.10" # Note: update version if needed
     
     echo "Preparing and deploying ${subgraph_name}..."
     yarn prepare:${network} && graph codegen && graph build

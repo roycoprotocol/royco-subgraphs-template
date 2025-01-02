@@ -1,6 +1,6 @@
 {
   "network": "plume",
-  "address": "0x783251f103555068c1e9d755f69458f39ed937c0",
-  "startBlock": 60713,
+  "address": "0xda2e8a79b09c8cf07772acf0105419342e40b6c3",
+  "startBlock": 115200,
   "chainId": 98865
 }

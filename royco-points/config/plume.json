@@ -1,6 +1,6 @@
 {
   "network": "plume",
   "chainId": 98865,
-  "pointsFactoryAddress": "0x19112adbdafb465ddf0b57ecc07e68110ad09c50",
-  "pointsFactoryStartBlock": 60704
+  "pointsFactoryAddress": "0x86cbefba5cef451f9ff5bb76e0da6ea845a05201",
+  "pointsFactoryStartBlock": 115197
 }
