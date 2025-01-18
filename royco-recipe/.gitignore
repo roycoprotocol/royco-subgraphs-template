@@ -32,3 +32,6 @@ typechain-types
 
 # Hardhat files
 cache
+
+# temp files
+temp

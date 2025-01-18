@@ -16,7 +16,8 @@
     "prepare:arbitrum-sepolia": "mustache config/arbitrum-sepolia.json subgraph.template.yaml > subgraph.yaml && mustache config/arbitrum-sepolia.json config/constants.template.ts > src/constants.ts",
     "prepare:arbitrum-one": "mustache config/arbitrum-one.json subgraph.template.yaml > subgraph.yaml && mustache config/arbitrum-one.json config/constants.template.ts > src/constants.ts",
     "prepare:plume": "mustache config/plume.json subgraph.template.yaml > subgraph.yaml && mustache config/plume.json config/constants.template.ts > src/constants.ts",
-    "prepare:corn-maizenet": "mustache config/corn-maizenet.json subgraph.template.yaml > subgraph.yaml && mustache config/corn-maizenet.json config/constants.template.ts > src/constants.ts"
+    "prepare:corn-maizenet": "mustache config/corn-maizenet.json subgraph.template.yaml > subgraph.yaml && mustache config/corn-maizenet.json config/constants.template.ts > src/constants.ts",
+    "prepare:sonic": "mustache config/sonic.json subgraph.template.yaml > subgraph.yaml && mustache config/sonic.json config/constants.template.ts > src/constants.ts"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.83.0",

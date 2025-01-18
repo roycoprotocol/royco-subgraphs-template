@@ -5,11 +5,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: RecipeMarketHub
-    network: corn-maizenet
+    network: sonic
     source:
-      address: "0x783251f103555068c1e9d755f69458f39ed937c0"
+      address: "0xfcc593ad3705ebcd72ec961c63eb484be795bdbd"
       abi: RecipeMarketHub
-      startBlock: 9044
+      startBlock: 4353631
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -53,7 +53,7 @@ dataSources:
 templates:
   - name: WeirollWalletTemplate
     kind: ethereum/contract
-    network: corn-maizenet
+    network: sonic
     source:
       abi: WeirollWallet
     mapping:

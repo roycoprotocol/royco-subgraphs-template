@@ -8,12 +8,13 @@ networks=(
     "base"
     "plume"
     "corn-maizenet"
+    "sonic"
 )
 
 # Function to prepare and deploy subgraph
 prepare_and_deploy() {
     local network=$1
-    local subgraph_name="royco-recipe-${network}/1.0.25" # Note: update version if needed
+    local subgraph_name="royco-recipe-${network}/1.0.26" # Note: update version if needed
     
     echo "Preparing and deploying ${subgraph_name}..."
     yarn prepare:${network} && graph codegen && graph build

@@ -5,11 +5,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: WrappedVaultFactory
-    network: corn-maizenet
+    network: sonic
     source:
-      address: "0x75e502644284edf34421f9c355d75db79e343bca"
+      address: "0x7212d98a88d44f714fd29dd980cb846be8e7491a"
       abi: WrappedVaultFactory
-      startBlock: 9044
+      startBlock: 4353631
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -26,11 +26,11 @@ dataSources:
       file: ./src/wrapped-vault-factory.ts
   - kind: ethereum
     name: VaultMarketHub
-    network: corn-maizenet
+    network: sonic
     source:
-      address: "0xa97ecc6bfda40baf2fdd096dd33e88bd8e769280"
+      address: "0x1e3fcccbafdbdf3cb17b7470c8a6cc64eb5f94a2"
       abi: VaultMarketHub
-      startBlock: 9044
+      startBlock: 4353631
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -54,7 +54,7 @@ dataSources:
 templates:
   - name: WrappedVaultTemplate
     kind: ethereum/contract
-    network: corn-maizenet
+    network: sonic
     source:
       abi: WrappedVault
     mapping:
